@@ -3,60 +3,30 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Socialite;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
-    /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return \Illuminate\Http\Response
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
      */
-    public function redirectToProvider()
-    {
-        return Socialite::driver('github')->redirect();
-    }
 
-    /**
-     * Obtain the user information from GitHub.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function handleProviderCallback()
-    {
-        try {
-            $user = Socialite::driver('github')->stateless()->user();
-        } catch (Exception $e) {
-            return Redirect::to('auth/github');
-        }
-
-        $authUser = $this->findOrCreateUser($user);
-
-        Auth::login($authUser, true);
-
-        return Redirect::to('dashboard');
-    }
+    use AuthenticatesUsers;
 
     /**
-     * Return user if exists; create and return if doesn't
+     * Create a new controller instance.
      *
-     * @param $githubUser
-     * @return User
+     * @return void
      */
-    private function findOrCreateUser($githubUser)
+    public function __construct()
     {
-        if ($authUser = User::where('github_id', $githubUser->id)->first()) {
-            return $authUser;
-        }
-
-        return User::create([
-            'name' => $githubUser->name,
-            'email' => $githubUser->email,
-            'github_id' => $githubUser->id,
-            'avatar' => $githubUser->avatar,
-        ]);
+        $this->middleware('guest')->except('logout');
     }
 }
