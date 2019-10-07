@@ -55,7 +55,7 @@ class GithubLoginController extends Controller
         }
 
         return User::create([
-            'name' => $githubUser->name,
+            'name' => $githubUser->nickname,
             'email' => $githubUser->email,
             'github_id' => $githubUser->id,
             'avatar' => $githubUser->avatar,
