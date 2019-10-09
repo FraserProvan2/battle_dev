@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Socialite;
 
-class GithubLoginController extends Controller
+class AccountController extends Controller
 {
     /**
      * Redirect the user to the GitHub authentication page.
@@ -60,5 +60,17 @@ class GithubLoginController extends Controller
             'github_id' => $githubUser->id,
             'avatar' => $githubUser->avatar,
         ]);
+    }
+
+    /**
+     * Logs user out of application
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logout() 
+    {
+        Auth::logout();
+
+        return Redirect::to('/');
     }
 }

@@ -2,7 +2,10 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-@import 'variables';
+// @import 'variables';
 
 // Bootstrap
+@import "node_modules/bootswatch/dist/superhero/variables";
 @import '~bootstrap/scss/bootstrap';
+@import "node_modules/bootswatch/dist/superhero/bootswatch";
+@import './third_party/bootstrap-social';
