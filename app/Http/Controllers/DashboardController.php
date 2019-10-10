@@ -7,6 +7,8 @@ use App\Events\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\ServiceProvider;
+
 class DashboardController extends Controller
 {
     /**
@@ -32,7 +34,6 @@ class DashboardController extends Controller
             $current_battle = Auth::user()->getBattle();
             Test::dispatch(Auth::user()->getBattle());
         }
-        
     
         return view('dashboard', [
             'current_battle' => $current_battle
