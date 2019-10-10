@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Test;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -23,6 +24,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        Test::dispatch();
+        @dump(new Test());
+
         return view('dashboard');
     }
 }
