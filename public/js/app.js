@@ -78972,12 +78972,16 @@ function (_Component) {
 
     _classCallCheck(this, BattleAlpha);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props)); // listens to pusher channel for updates
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props));
+    _this.state = {
+      id: _this.props.battleId
+    }; // Debug
 
-    window.Echo.channel('test-channel').listen('Test', function (response) {
+    console.log("Battle ID: ".concat(_this.state.id)); // listens to pusher channel for updates
+
+    window.Echo["private"]("App.Battle.".concat(_this.state.id)).listen('Test', function (response) {
       console.log(response);
     });
-    _this.state = {};
     return _this;
   }
 

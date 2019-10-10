@@ -21,9 +21,10 @@
 
             {{-- Battle Finder/Battle Scene --}}
             <div class="col-md-7">
-                {{--if user in battle--}}
-                @if(1 == 1) 
-                    <div id="battle"></div>
+                @if($current_battle) 
+                    <div id="battle"
+                        data-battle-id="{{ $current_battle->id }}"
+                    ></div>
                 @else 
                     <div id="finder"></div>
                 @endif

@@ -11,6 +11,17 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+use App\Battle;
+
+// Auth for Battle channels
+Broadcast::channel('App.Battle.{id}', function ($user, $id) {
+    $battle = Battle::findOrNew($id);
+    
+    // IF user id is UserA OR UserB in Battle
+    if ($user->id === $battle->user_a || $user->id === $battle->user_b ) {
+        return true;
+    }
+
+    return false;
 });
+

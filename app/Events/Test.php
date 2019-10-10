@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Battle;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,16 +15,16 @@ class Test implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $foo = 'bar';
+    public $battle;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($battle)
     {
-        //
+        $this->battle = $battle;
     }
 
     /**
@@ -33,6 +34,6 @@ class Test implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('test-channel');
+        return new PrivateChannel('App.Battle.' . $this->battle->id);
     }
 }

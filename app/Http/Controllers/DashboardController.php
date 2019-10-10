@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Battle;
 use App\Events\Test;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -24,8 +26,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        Test::dispatch();
-
-        return view('dashboard');
+        // checks if users in current battle, if so get battle data (TEMP)
+        $current_battle = null;
+        if(Auth::user() && Auth::user()->getBattle()) {
+            $current_battle = Auth::user()->getBattle();
+            Test::dispatch(Auth::user()->getBattle());
+        }
+        
+    
+        return view('dashboard', [
+            'current_battle' => $current_battle
+        ]);
     }
 }

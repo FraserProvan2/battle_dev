@@ -5,18 +5,22 @@ export default class BattleAlpha extends Component {
     constructor(props) {
         super(props)
 
+        this.state = {
+            id: this.props.battleId
+        }
+
+        // Debug
+        console.log(`Battle ID: ${this.state.id}`);
+
         // listens to pusher channel for updates
-        window.Echo.channel('test-channel').listen('Test', (response) => {
+        window.Echo.private(`App.Battle.${this.state.id}`).listen('Test', (response) => {
             console.log(response);
         });
- 
-        this.state = {}
     }
     
     render() {
         return (
         <div className="card">
-            
             <div className="card-header">Battle Alpha</div>
             <div className="card-body">
 
