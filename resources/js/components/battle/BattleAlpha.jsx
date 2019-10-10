@@ -5,9 +5,7 @@ export default class BattleAlpha extends Component {
     constructor(props) {
         super(props)
  
-        this.state = {
-            firstName: props.firstName
-        }
+        this.state = {}
     }
     
     render() {

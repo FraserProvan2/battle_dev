@@ -69127,9 +69127,7 @@ function (_Component) {
     _classCallCheck(this, BattleAlpha);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props));
-    _this.state = {
-      firstName: props.firstName
-    };
+    _this.state = {};
     return _this;
   }
 
@@ -69208,9 +69206,7 @@ function (_Component) {
     _classCallCheck(this, Finder);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
-    _this.state = {
-      firstName: props.firstName
-    };
+    _this.state = {};
     return _this;
   }
 
