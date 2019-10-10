@@ -1,31 +1,31 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-export default class Example extends Component {
+export default class BattleAlpha extends Component {
     constructor(props) {
         super(props)
  
-        this.state = {
-            firstName: props.firstName
-        }
+        this.state = {}
     }
     
     render() {
         return (
         <div className="card">
-            <div className="card-header">From Example Component</div>
-            <div className="card-body">First Name: {this.state.firstName}</div>
+            <div className="card-header">Battle Alpha</div>
+            <div className="card-body">
+
+            </div>
         </div>
         )
     }
 }
 
 // Rendering 
-const bindToId = 'class-component';
+const bindToId = 'battle';
 
 if (document.getElementById(bindToId)) {
     const element = document.getElementById(bindToId)
     const props = Object.assign({}, element.dataset) //binds data attributes
 
-    ReactDOM.render(<Example {...props}/>, element);
+    ReactDOM.render(<BattleAlpha {...props}/>, element);
 }

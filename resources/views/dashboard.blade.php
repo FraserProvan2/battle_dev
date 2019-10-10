@@ -11,16 +11,22 @@
                         <div class="card-header">About</div>
                         <div class="card-body">description about signing up</div>
                     </div>
-
                 @else 
                     {{-- Player Profile --}}
-                    <div id="class-component" data-first-name="nath"></div> 
+                    <div id="profile" 
+                        data-first-name="nath"
+                    ></div> 
                 @endguest
             </div>
 
             {{-- Battle Finder/Battle Scene --}}
             <div class="col-md-7">
-                
+                {{--if user in battle--}}
+                @if(1 == 2) 
+                    <div id="battle"></div>
+                @else 
+                    <div id="finder"></div>
+                @endif
             </div>
         </div>
 
