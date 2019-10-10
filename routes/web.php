@@ -13,3 +13,7 @@ Route::get('/', 'DashboardController@index')->name('dashboard');
 Route::get('login/github', 'Auth\AccountController@redirectToProvider')->name('github-login');
 Route::get('login/github/callback', 'Auth\AccountController@handleProviderCallback');
 Route::post('logout', 'Auth\AccountController@logout')->name('logout');
+
+/*----------------------------------------------------------------------
+| Misc Routes
+|----------------------------------------------------------------------*/
