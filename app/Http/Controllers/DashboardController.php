@@ -25,7 +25,6 @@ class DashboardController extends Controller
     public function index()
     {
         Test::dispatch();
-        @dump(new Test());
 
         return view('dashboard');
     }

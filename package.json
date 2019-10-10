@@ -25,6 +25,8 @@
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
-        "bootswatch": "^4.3.1"
+        "bootswatch": "^4.3.1",
+        "laravel-echo": "^1.6.1",
+        "pusher-js": "^5.0.2"
     }
 }

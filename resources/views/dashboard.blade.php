@@ -22,7 +22,7 @@
             {{-- Battle Finder/Battle Scene --}}
             <div class="col-md-7">
                 {{--if user in battle--}}
-                @if(1 == 2) 
+                @if(1 == 1) 
                     <div id="battle"></div>
                 @else 
                     <div id="finder"></div>

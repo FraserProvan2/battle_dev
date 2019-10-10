@@ -4,6 +4,11 @@ import ReactDOM from 'react-dom';
 export default class BattleAlpha extends Component {
     constructor(props) {
         super(props)
+
+        // listens to pusher channel for updates
+        window.Echo.channel('test-channel').listen('Test', (response) => {
+            console.log(response);
+        });
  
         this.state = {}
     }
@@ -11,6 +16,7 @@ export default class BattleAlpha extends Component {
     render() {
         return (
         <div className="card">
+            
             <div className="card-header">Battle Alpha</div>
             <div className="card-body">
 
