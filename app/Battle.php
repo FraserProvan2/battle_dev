@@ -13,4 +13,10 @@ class Battle extends Model
     {
         return $this->hasMany('App\Turn');
     }
+
+    public function getTurn()
+    {
+        return $this->turn->last();
+    }
+
 }

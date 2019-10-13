@@ -78951,9 +78951,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -78974,14 +78974,24 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props));
     _this.state = {
-      id: _this.props.battleId
+      id: _this.props.battleId,
+      turn: {}
     }; // Debug
 
-    console.log("Battle ID: ".concat(_this.state.id)); // listens to pusher channel for updates
+    console.log("Battle ID: ".concat(_this.state.id)); // listens battle updates
 
-    window.Echo["private"]("App.Battle.".concat(_this.state.id)).listen('Test', function (response) {
-      console.log(response);
-    });
+    window.Echo["private"]("App.Battle.".concat(_this.state.id)) // .listen('Test', (response) => {
+    //     // console.log(response);
+    // })
+    .listen('TurnEndUpdate', function (response) {
+      console.log(response); // update turn state
+
+      _this.setState({
+        turn: response.turn
+      });
+    }); // binding `this` to functions
+
+    _this.playerAction = _this.playerAction.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -78994,8 +79004,40 @@ function (_Component) {
         className: "card-header"
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }));
+      }, this.renderPlayerActions()));
     }
+  }, {
+    key: "renderPlayerActions",
+    value: function renderPlayerActions() {
+      var _this2 = this;
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn btn-primary w-100",
+        onClick: function onClick() {
+          return _this2.playerAction("attack");
+        }
+      }, "Attack")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-6"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn btn-primary w-100",
+        onClick: function onClick() {
+          return _this2.playerAction("block");
+        }
+      }, "Block")));
+    }
+  }, {
+    key: "playerAction",
+    value: function playerAction(playersAction) {
+      axios.post("/battle", {
+        battle: this.state.id,
+        action: playersAction
+      });
+    } // end of round update channel listen
+
   }]);
 
   return BattleAlpha;

@@ -16,9 +16,11 @@ class CreateTurnsTable extends Migration
         Schema::create('turns', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('battle_id');
-            $table->integer('turn_number')->default(0);
-            $table->enum('players_turn', ['a', 'b'])->default('a');
-            $table->longText('message')->nullable();
+            $table->string('status')->default('pending');
+            $table->integer('turn_number')->default(1);
+            $table->enum('player_a_action', ['attack', 'block'])->nullable();
+            $table->enum('player_b_action', ['attack', 'block'])->nullable();
+            $table->longText('battle_frame')->nullable();
             $table->timestamps();
 
             $table->foreign('battle_id')

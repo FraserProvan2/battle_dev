@@ -15,5 +15,7 @@ Route::get('login/github/callback', 'Auth\AccountController@handleProviderCallba
 Route::post('logout', 'Auth\AccountController@logout')->name('logout');
 
 /*----------------------------------------------------------------------
-| Misc Routes
+| Battle Routes
 |----------------------------------------------------------------------*/
+
+Route::post('battle', 'GameEngineController@main');

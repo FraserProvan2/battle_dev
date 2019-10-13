@@ -50,4 +50,19 @@ class User extends Authenticatable
             ->orWhere('user_b', $user_id)
             ->first();
     }
+
+    public function speed()
+    {
+        return 10;
+    }
+
+    public function damage()
+    {
+        return 25;
+    }
+
+    public function hp()
+    {
+        return 125;
+    }
 }

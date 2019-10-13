@@ -6,16 +6,28 @@ export default class BattleAlpha extends Component {
         super(props)
 
         this.state = {
-            id: this.props.battleId
+            id: this.props.battleId,
+            turn: {}
         }
 
         // Debug
         console.log(`Battle ID: ${this.state.id}`);
 
-        // listens to pusher channel for updates
-        window.Echo.private(`App.Battle.${this.state.id}`).listen('Test', (response) => {
-            console.log(response);
-        });
+        // listens battle updates
+        window.Echo.private(`App.Battle.${this.state.id}`)
+            // .listen('Test', (response) => {
+            //     // console.log(response);
+            // })
+            .listen('TurnEndUpdate', (response) => {
+                console.log(response);
+                // update turn state
+                this.setState({
+                    turn: response.turn
+                })
+            });
+
+        // binding `this` to functions
+        this.playerAction = this.playerAction.bind(this);
     }
     
     render() {
@@ -23,11 +35,37 @@ export default class BattleAlpha extends Component {
         <div className="card">
             <div className="card-header">Battle Alpha</div>
             <div className="card-body">
-
+                {this.renderPlayerActions()}
             </div>
         </div>
         )
     }
+
+    renderPlayerActions() {
+        return (
+            <div className="row">
+                <div className="col-md-6">
+                    <a className="btn btn-primary w-100" onClick={() => this.playerAction("attack")}>
+                        Attack
+                    </a>
+                </div>
+                <div className="col-md-6">
+                    <a className="btn btn-primary w-100" onClick={() => this.playerAction("block")}>
+                        Block
+                    </a>
+                </div>
+            </div>
+        )
+    }
+
+    playerAction(playersAction) {
+        axios.post(`/battle`, { 
+            battle: this.state.id,
+            action: playersAction
+        });
+    }
+
+    // end of round update channel listen
 }
 
 // Rendering 

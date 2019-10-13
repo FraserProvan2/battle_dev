@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $current_battle = null;
         if(Auth::user() && Auth::user()->getBattle()) {
             $current_battle = Auth::user()->getBattle();
-            Test::dispatch(Auth::user()->getBattle());
+            // Test::dispatch(Auth::user()->getBattle());
         }
     
         return view('dashboard', [
