@@ -78975,19 +78975,21 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props));
     _this.state = {
       id: _this.props.battleId,
-      turn: {}
+      turn: {},
+      turn_logs: null,
+      player_a: null,
+      player_b: null
     }; // Debug
 
     console.log("Battle ID: ".concat(_this.state.id)); // listens battle updates
 
-    window.Echo["private"]("App.Battle.".concat(_this.state.id)) // .listen('Test', (response) => {
-    //     // console.log(response);
-    // })
-    .listen('TurnEndUpdate', function (response) {
-      console.log(response); // update turn state
-
+    window.Echo["private"]("App.Battle.".concat(_this.state.id)).listen('TurnEndUpdate', function (response) {
+      // update turn state
       _this.setState({
-        turn: response.turn
+        turn: response.turn,
+        turn_logs: response.turn.battle_frame.turn_summary,
+        player_a: response.turn.battle_frame.player_a,
+        player_b: response.turn.battle_frame.player_b
       });
     }); // binding `this` to functions
 
@@ -79004,7 +79006,7 @@ function (_Component) {
         className: "card-header"
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, this.renderPlayerActions()));
+      }, this.renderPlayerActions(), this.renderTurnLogs()));
     }
   }, {
     key: "renderPlayerActions",
@@ -79015,19 +79017,47 @@ function (_Component) {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-6"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, this.renderPlayerStats(this.state.player_a), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         className: "btn btn-primary w-100",
         onClick: function onClick() {
           return _this2.playerAction("attack");
         }
       }, "Attack")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-6"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, this.renderPlayerStats(this.state.player_b), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         className: "btn btn-primary w-100",
         onClick: function onClick() {
           return _this2.playerAction("block");
         }
       }, "Block")));
+    }
+  }, {
+    key: "renderPlayerStats",
+    value: function renderPlayerStats(player) {
+      if (player) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          className: "h4"
+        }, player.username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+          className: "list-unstyled"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "small"
+        }, "HP: ", player.stats.hp), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "small"
+        }, "Damage: ", player.stats.damage), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "small"
+        }, "Speed: ", player.stats.speed)));
+      }
+
+      return;
+    }
+  }, {
+    key: "renderTurnLogs",
+    value: function renderTurnLogs() {
+      if (this.state.turn_logs) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.turn_logs);
+      }
+
+      return;
     }
   }, {
     key: "playerAction",
@@ -79036,8 +79066,7 @@ function (_Component) {
         battle: this.state.id,
         action: playersAction
       });
-    } // end of round update channel listen
-
+    }
   }]);
 
   return BattleAlpha;

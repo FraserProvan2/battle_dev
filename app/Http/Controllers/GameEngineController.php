@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class GameEngineController extends Controller
 {
+    // Globals for Turn/Battle instance
     public $player;
     public $player_role; // if players A or B
     public $battle;
@@ -19,6 +20,8 @@ class GameEngineController extends Controller
     public $turn;
     public $turn_ender; // whether this action will end the turn or not
     public $action; // 'attack' or 'block'
+
+    // Config
 
     /**
      * Main class method, processes fight round,
@@ -47,13 +50,11 @@ class GameEngineController extends Controller
         }
         // 2b. calc actions, end round, prepare next turn
         else {
-            // process and calculate players actions
+            // calc and finish current turn
             $this->calcPlayerActions();
-
-            // update previous Turn
-            $this->updateBattleFrame();
             $this->turn->status = "complete";
             $this->turn->update();
+            $this->battle_frame['turn_summary'] = "";  // reset turn_summary
 
             // prepare next turn
             $new_turn = new Turn([
@@ -80,7 +81,7 @@ class GameEngineController extends Controller
     /**
      * Validates and constructs the Turn/Battle objects
      * misc setters performed here as __construct doesn't have
-     * access to the Auth middlewar. Serveral checks to verify and set 
+     * access to the Auth middlewar. Serveral checks to verify and set
      * data for the turn, whether the user can perform action in Post request.
      *
      * @param Request request
@@ -103,6 +104,10 @@ class GameEngineController extends Controller
         // generate battle frame if round 1
         if ($this->turn->turn_number === 1) {
             $this->generateBattleFrame();
+        } 
+        // else get previous turns battle frame
+        else {
+            $this->battle_frame = $this->battle->getTurn()->battle_frame;
         }
 
         // set $this->player_role
@@ -116,7 +121,7 @@ class GameEngineController extends Controller
         if (!$this->turn->player_a_action && !$this->turn->player_b_action) {
             $this->turn_ender = false;
         } else if (!$this->turn->player_a_action && $this->turn->player_b_action ||
-                    $this->turn->player_a_action && !$this->turn->player_b_action) {
+            $this->turn->player_a_action && !$this->turn->player_b_action) {
             $this->turn_ender = true;
         } else {
             throw new Exception("Error setting frame");
@@ -142,7 +147,7 @@ class GameEngineController extends Controller
 
     /**
      * Generates a default battle frame, ready for round 1
-     * 
+     *
      */
     public function generateBattleFrame()
     {
@@ -175,45 +180,71 @@ class GameEngineController extends Controller
         $this->turn->battle_frame = $this->battle_frame;
     }
 
-    /**
-     * Updates battle frame to reflect changes after the current round
-     * 
-     */
-    public function updateBattleFrame()
-    {
-        $this->battle_frame = $this->battle->getTurn()->battle_frame;
-
-        // update $this->battle_frame for recent calcs
-    }
-    
     /*----------------------------------------------------------------------
     | Battle methods
     |----------------------------------------------------------------------*/
 
     public function calcPlayerActions()
     {
+        // players
+        $player_a = $this->battle_frame['player_a'];
+        $player_b = $this->battle_frame['player_b'];
+
+        // players action
         $action_a = $this->turn->player_a_action;
         $action_b = $this->turn->player_b_action;
 
-        // both block
+        // CASE 1: both block
         if ($action_a === 'block' && $action_b === 'block') {
-            // dump("nothing happened...");
+            $this->battle_frame['turn_summary'] = "Both players blocked, nothing happened...";
         }
-        // both attack
+        // CASE 2: both attack
         if ($action_a === 'attack' && $action_b === 'attack') {
+
+            // TODO consider Speed
+
             // player A
-                // dump("player A attacked!");
-                // dump("player A missed!");
+            $attackSuccess = $this->rollAttack();
+            if ($attackSuccess) {
+                $player_b['stats']['hp'] = ($player_b['stats']['hp'] - $player_a['stats']['damage']); // player A attacks player B
+                $this->battle_frame['turn_summary'] .= $player_a['username'] . " attacked for " . $player_a['stats']['damage'] ." damage!\r\n"; //
+            } else {
+                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_a']['username'] . " attacked and missed!\r\n"; // player A miss
+            }
+
+            // check if first player has died
 
             // player B
-                // dump("player B attacked!");
-                // dump("player B missed!");
+            $attackSuccess = $this->rollAttack();
+            if ($attackSuccess) {
+                $player_a['stats']['hp'] = ($player_a['stats']['hp'] - $player_b['stats']['damage']); // player A attacks player B
+                $this->battle_frame['turn_summary'] .= $player_b['username'] . " attacked for " . $player_b['stats']['damage'] ." damage!\r\n"; //
+            } else {
+                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_b']['username'] . " attacked and missed!\r\n"; // player A miss
+            }
         }
-        // one block/one attack
+        // CASE 3: one blocks, one attacks
         if ($action_a === 'attack' && $action_b === 'block' ||
-            $action_a === 'block' && $action_b === 'attack'
+        $action_a === 'block' && $action_b === 'attack'
         ) {
             // dump("player A's blocked and healed");
         }
+
+        // update instance battle_frame of calculation results  
+        $this->battle_frame['player_a'] = $player_a;
+        $this->battle_frame['player_b'] = $player_b;
+
+        // update battle frame on Turn object
+        $this->turn->battle_frame = $this->battle_frame;
+    }
+
+    public function rollAttack()
+    {
+        $roll = rand(1, 3);
+        if ($roll === 1) { // 1/3 chance of missing
+            return false;
+        }
+
+        return true;
     }
 }

@@ -7,7 +7,10 @@ export default class BattleAlpha extends Component {
 
         this.state = {
             id: this.props.battleId,
-            turn: {}
+            turn: {},
+            turn_logs: null,
+            player_a: null,
+            player_b: null,
         }
 
         // Debug
@@ -15,17 +18,16 @@ export default class BattleAlpha extends Component {
 
         // listens battle updates
         window.Echo.private(`App.Battle.${this.state.id}`)
-            // .listen('Test', (response) => {
-            //     // console.log(response);
-            // })
             .listen('TurnEndUpdate', (response) => {
-                console.log(response);
                 // update turn state
                 this.setState({
-                    turn: response.turn
-                })
+                    turn: response.turn,
+                    turn_logs: response.turn.battle_frame.turn_summary,
+                    player_a: response.turn.battle_frame.player_a,
+                    player_b: response.turn.battle_frame.player_b,
+                });
             });
-
+            
         // binding `this` to functions
         this.playerAction = this.playerAction.bind(this);
     }
@@ -36,6 +38,7 @@ export default class BattleAlpha extends Component {
             <div className="card-header">Battle Alpha</div>
             <div className="card-body">
                 {this.renderPlayerActions()}
+                {this.renderTurnLogs()}
             </div>
         </div>
         )
@@ -45,11 +48,13 @@ export default class BattleAlpha extends Component {
         return (
             <div className="row">
                 <div className="col-md-6">
+                    {this.renderPlayerStats(this.state.player_a)}
                     <a className="btn btn-primary w-100" onClick={() => this.playerAction("attack")}>
                         Attack
                     </a>
                 </div>
                 <div className="col-md-6">
+                    {this.renderPlayerStats(this.state.player_b)}
                     <a className="btn btn-primary w-100" onClick={() => this.playerAction("block")}>
                         Block
                     </a>
@@ -58,14 +63,39 @@ export default class BattleAlpha extends Component {
         )
     }
 
+    renderPlayerStats(player) {
+        if (player) {
+            return (
+                <div>
+                    <span className="h4">{player.username}</span>
+                    <ul className="list-unstyled">
+                        <li className="small">HP: {player.stats.hp}</li>
+                        <li className="small">Damage: {player.stats.damage}</li>
+                        <li className="small">Speed: {player.stats.speed}</li>
+                    </ul>
+                </div>
+            );
+        } 
+        return;
+    }
+
+    renderTurnLogs() {
+        if (this.state.turn_logs) {
+            return (
+                <p>
+                    {this.state.turn_logs}
+                </p>
+            );
+        }
+        return;
+    }
+
     playerAction(playersAction) {
         axios.post(`/battle`, { 
             battle: this.state.id,
             action: playersAction
         });
     }
-
-    // end of round update channel listen
 }
 
 // Rendering 
