@@ -21,7 +21,7 @@ class GameEngineController extends Controller
     public $action; // 'attack' or 'block'
 
     /**
-     * Main class method, processes fight round, 
+     * Main class method, processes fight round,
      * game logic + execution of battle
      *
      * @param Request $request
@@ -30,42 +30,45 @@ class GameEngineController extends Controller
     {
         // 1. set up and validate battle Instance
         try {
-            $this->setGlobals($request);
-            $this->setFrame();
-            $this->setPlayerAction(); // update Turn object for current plays action
+            $this->constructTurn($request);
         } catch (Exception $e) {
+            // catch any errors validating and constructing game engine
             return response()->json([
                 'message' => 'Bad Request',
             ], 400);
         }
-        
-        // 3a. if not turn ender, just return after action update
+
+        // 2a. if not turn ender, just return after action update
         if (!$this->turn_ender) {
             $this->turn->update();
-
             $response = response()->json([
                 'message' => 'action received',
             ]);
         }
-        // 3b. calc actions, end round, prepare next turn
-        else { 
+        // 2b. calc actions, end round, prepare next turn
+        else {
             // process and calculate players actions
             $this->calcPlayerActions();
-            
-            // update previous turn
+
+            // update previous Turn
             $this->updateBattleFrame();
             $this->turn->status = "complete";
             $this->turn->update();
 
             // prepare next turn
-            $this->prepareNextTurn();
+            $new_turn = new Turn([
+                'battle_id' => $this->battle->id,
+                'turn_number' => $this->turn->turn_number + 1,
+                'battle_frame' => $this->battle_frame,
+            ]);
+            $new_turn->save();
 
             $response = response()->json([
                 'message' => 'action received, turn ended',
             ]);
         }
 
-        // 4. broadcast event, return HTTP response
+        // 3. broadcast event, return HTTP response
         TurnEndUpdate::dispatch($this->turn);
         return $response;
     }
@@ -75,15 +78,15 @@ class GameEngineController extends Controller
     |----------------------------------------------------------------------*/
 
     /**
-     * Sets up instance globals, and valdiates request
-     * We do these here because constructor doesn't
-     * have Auth avalible
+     * Validates and constructs the Turn/Battle objects
+     * misc setters performed here as __construct doesn't have
+     * access to the Auth middlewar. Serveral checks to verify and set 
+     * data for the turn, whether the user can perform action in Post request.
      *
      * @param Request request
-     *
      * @return Boolean whether battle setup was successful or not
      */
-    public function setGlobals(Request $request)
+    public function constructTurn(Request $request)
     {
         // validate request
         $request->validate([
@@ -92,45 +95,63 @@ class GameEngineController extends Controller
         ]);
 
         // set globals for battle instance (Battle/Turn)
-        $this->battle = Battle::find($request->battle);
         $this->player = Auth::user();
         $this->action = $request->action;
-        $this->setPlayerRole();
-    }
-
-    public function setFrame()
-    {
+        $this->battle = Battle::find($request->battle);
         $this->turn = $this->battle->getTurn();
 
-        $action_a = $this->turn->player_a_action;
-        $action_b = $this->turn->player_b_action;
-
-        // if fresh game, generate battle frame
+        // generate battle frame if round 1
         if ($this->turn->turn_number === 1) {
-            $this->setBattleFrame();
+            $this->generateBattleFrame();
         }
 
-        // check if user has already actioned
-        if ($this->player_role === "a" && $this->turn->player_a_action || 
-            $this->player_role === "b" && $this->turn->player_b_action) {
-                throw new Exception("User already actioned this turn");
+        // set $this->player_role
+        if ($this->player->id === $this->battle->user_a) {
+            $this->player_role = "a";
+        } else if ($this->player->id === $this->battle->user_b) {
+            $this->player_role = "b";
         }
 
-        // fresh round
-        if (!$action_a && !$action_b) {
+        // check if the current action with end turn or not
+        if (!$this->turn->player_a_action && !$this->turn->player_b_action) {
             $this->turn_ender = false;
-        } else if (!$action_a && $action_b || $action_a && !$action_b) {
+        } else if (!$this->turn->player_a_action && $this->turn->player_b_action ||
+                    $this->turn->player_a_action && !$this->turn->player_b_action) {
             $this->turn_ender = true;
         } else {
             throw new Exception("Error setting frame");
         }
+
+        // set players action this turn, catch if already actioned this turns
+        if ($this->player_role === 'a') {
+            // check if user has already actioned
+            if (!$this->battle->getTurn()->player_a_action) {
+                $this->turn->player_a_action = $this->action;
+            } else {
+                throw new Exception("User already actioned this turn");
+            }
+        } else if ($this->player_role === 'b') {
+            // check if user has already actioned
+            if (!$this->battle->getTurn()->player_b_action) {
+                $this->turn->player_b_action = $this->action;
+            } else {
+                throw new Exception("User already actioned this turn");
+            }
+        }
     }
 
-    public function setBattleFrame()
+    /**
+     * Generates a default battle frame, ready for
+     * round 1
+     * 
+     */
+    public function generateBattleFrame()
     {
+        // gets user A and Bs User by ID
         $player_a = User::find($this->battle->user_a);
         $player_b = User::find($this->battle->user_b);
 
+        // default battle frame is set
         $this->battle_frame = [
             'turn_summary' => '',
             'player_a' => [
@@ -151,46 +172,22 @@ class GameEngineController extends Controller
             ],
         ];
 
+        // sets this Turns battle_frame
         $this->turn->battle_frame = $this->battle_frame;
     }
 
-    public function setPlayerAction()
-    {
-        if ($this->player_role === 'a') {
-            $this->turn->player_a_action = $this->action;
-        } else if ($this->player_role === 'b') {
-            $this->turn->player_b_action = $this->action;
-        }
-    }
-
-    public function setPlayerRole()
-    {
-        if ($this->player->id === $this->battle->user_a) {
-            $this->player_role = "a";
-        } else if ($this->player->id === $this->battle->user_b) {
-            $this->player_role = "b";
-        }
-    }
-
-    public function updateBattleFrame() 
+    /**
+     * Updates battle frame to reflect changes after the
+     * current round
+     * 
+     */
+    public function updateBattleFrame()
     {
         $this->battle_frame = $this->battle->getTurn()->battle_frame;
-        dump($this->battle_frame);
-        // update $this->battle_frame
+
+        // update $this->battle_frame for recent calcs
     }
-
-
-    public function prepareNextTurn()
-    {
-        $new_turn = new Turn([
-            'battle_id' => $this->battle->id,
-            'turn_number' => $this->turn->turn_number + 1,
-            'battle_frame' => $this->battle_frame
-        ]);
-  
-        $new_turn->save();
-    }
-
+    
     /*----------------------------------------------------------------------
     | Battle methods
     |----------------------------------------------------------------------*/
@@ -202,45 +199,23 @@ class GameEngineController extends Controller
 
         // both block
         if ($action_a === 'block' && $action_b === 'block') {
-            // $this->battle_frame['turn_summary'] = 'Nothing happened...';
-            dump("nothing happened...");
+            // dump("nothing happened...");
         }
         // both attack
         if ($action_a === 'attack' && $action_b === 'attack') {
-            // player A attacks
-            if ($this->rollAttack()) {
-                dump("player A attacked!");
-            } else {
-                dump("player A missed!");
-            }
+            // player A
+                // dump("player A attacked!");
+                // dump("player A missed!");
 
-            // player B attacks
-            if ($this->rollAttack()) {
-                dump("player B attacked!");
-            } else {
-                dump("player B missed!");
-            }
+            // player B
+                // dump("player B attacked!");
+                // dump("player B missed!");
         }
         // one block/one attack
         if ($action_a === 'attack' && $action_b === 'block' ||
             $action_a === 'block' && $action_b === 'attack'
         ) {
-            dump("rollAttack() & rollBock()");
+            // dump("player A's blocked and healed");
         }
     }
-
-    public function rollAttack()
-    {
-        if (rand(1, 10) > 5) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function rollBlock()
-    {
-        //
-    }
-
 }
