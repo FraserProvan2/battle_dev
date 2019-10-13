@@ -141,8 +141,7 @@ class GameEngineController extends Controller
     }
 
     /**
-     * Generates a default battle frame, ready for
-     * round 1
+     * Generates a default battle frame, ready for round 1
      * 
      */
     public function generateBattleFrame()
@@ -177,8 +176,7 @@ class GameEngineController extends Controller
     }
 
     /**
-     * Updates battle frame to reflect changes after the
-     * current round
+     * Updates battle frame to reflect changes after the current round
      * 
      */
     public function updateBattleFrame()
