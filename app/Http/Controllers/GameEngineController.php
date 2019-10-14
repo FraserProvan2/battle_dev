@@ -182,7 +182,7 @@ class GameEngineController extends Controller
     | Battle methods
     |----------------------------------------------------------------------*/
 
-    // Battle variables
+    // contains players data for THIS battle frame (this turn)
     public $player_a_frame;
     public $player_b_frame;
 
@@ -228,7 +228,17 @@ class GameEngineController extends Controller
         if ($action_a === 'attack' && $action_b === 'block' ||
             $action_a === 'block' && $action_b === 'attack'
         ) {
+            // player A blocked
+            if ($action_a === 'block') {
+                $this->tryBlock('a');
+            }
+            // player B blocked
+            else if ($action_b === 'block') {
+                $this->tryBlock('b');
+            }
+
             // dump("player A's blocked and healed");
+
         }
 
         // update instance battle_frame of calculation results
@@ -283,6 +293,31 @@ class GameEngineController extends Controller
                 $this->battle_frame['turn_summary'] .= $this->battle_frame['player_b']['username'] . " attacked and missed!\r\n"; // player A miss
             }
         }
+    }
+
+    /**
+     * 
+     */
+    public function tryBlock($player)
+    {
+        // roll block (if false attack missed)
+        $block_success = true; // default: hit
+        $roll = rand(1, 10);
+        if ($roll === 1) { 
+            // perfect
+
+        }
+
+
+        // player A blocks
+        if ($player === 'a') {
+
+        }
+        // Player B blocks
+        else if ($player === 'b') {
+
+        }
+
     }
 
     /**
