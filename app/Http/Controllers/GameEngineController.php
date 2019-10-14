@@ -21,7 +21,9 @@ class GameEngineController extends Controller
     public $turn_ender; // whether this action will end the turn or not
     public $action; // 'attack' or 'block'
 
-    // Config
+    // Calc Variables
+    public $player_a_frame;
+    public $player_b_frame;
 
     /**
      * Main class method, processes fight round,
@@ -117,7 +119,7 @@ class GameEngineController extends Controller
             $this->player_role = "b";
         }
 
-        // check if the current action with end turn or not
+        // check if the current action will end turn or not
         if (!$this->turn->player_a_action && !$this->turn->player_b_action) {
             $this->turn_ender = false;
         } else if (!$this->turn->player_a_action && $this->turn->player_b_action ||
@@ -187,8 +189,8 @@ class GameEngineController extends Controller
     public function calcPlayerActions()
     {
         // players
-        $player_a = $this->battle_frame['player_a'];
-        $player_b = $this->battle_frame['player_b'];
+        $this->player_a_frame = $this->battle_frame['player_a'];
+        $this->player_b_frame = $this->battle_frame['player_b'];
 
         // players action
         $action_a = $this->turn->player_a_action;
@@ -200,27 +202,15 @@ class GameEngineController extends Controller
         }
         // CASE 2: both attack
         if ($action_a === 'attack' && $action_b === 'attack') {
-
-            // TODO consider Speed
-
-            // player A
-            $attackSuccess = $this->rollAttack();
-            if ($attackSuccess) {
-                $player_b['stats']['hp'] = ($player_b['stats']['hp'] - $player_a['stats']['damage']); // player A attacks player B
-                $this->battle_frame['turn_summary'] .= $player_a['username'] . " attacked for " . $player_a['stats']['damage'] ." damage!\r\n"; //
-            } else {
-                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_a']['username'] . " attacked and missed!\r\n"; // player A miss
-            }
-
-            // check if first player has died
-
-            // player B
-            $attackSuccess = $this->rollAttack();
-            if ($attackSuccess) {
-                $player_a['stats']['hp'] = ($player_a['stats']['hp'] - $player_b['stats']['damage']); // player A attacks player B
-                $this->battle_frame['turn_summary'] .= $player_b['username'] . " attacked for " . $player_b['stats']['damage'] ." damage!\r\n"; //
-            } else {
-                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_b']['username'] . " attacked and missed!\r\n"; // player A miss
+            // if player A is faster
+            if ($this->player_a_frame['stats']['speed'] >= $this->player_b_frame['stats']['speed']) {
+                $this->tryAttack('a'); // A attacks first
+                $this->tryAttack('b');
+            } 
+            // else player B is faster
+            else {
+                $this->tryAttack('b'); // B attacks first
+                $this->tryAttack('a');
             }
         }
         // CASE 3: one blocks, one attacks
@@ -231,20 +221,40 @@ class GameEngineController extends Controller
         }
 
         // update instance battle_frame of calculation results  
-        $this->battle_frame['player_a'] = $player_a;
-        $this->battle_frame['player_b'] = $player_b;
+        $this->battle_frame['player_a'] = $this->player_a_frame;
+        $this->battle_frame['player_b'] = $this->player_b_frame;
 
         // update battle frame on Turn object
         $this->turn->battle_frame = $this->battle_frame;
     }
 
-    public function rollAttack()
+    public function tryAttack($player)
     {
+        // roll attack (if false attack missed)
+        $attack_hit = true; // default: hit
         $roll = rand(1, 3);
         if ($roll === 1) { // 1/3 chance of missing
-            return false;
+            $attack_hit = false; // miss
         }
-
-        return true;
+        
+        // player A attacks
+        if ($player === 'a') {
+            if ($attack_hit) {
+                $this->player_b_frame['stats']['hp'] = ($this->player_b_frame['stats']['hp'] - $this->player_a_frame['stats']['damage']); // calc hp after damage
+                $this->battle_frame['turn_summary'] .= $this->player_a_frame['username'] . " attacked for " . $this->player_a_frame['stats']['damage'] ." damage!\r\n";
+            } else {
+                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_a']['username'] . " attacked and missed!\r\n"; // player A miss
+            }
+        } 
+        // player B attacks
+        else if ($player === 'b') {
+            if ($attack_hit) {
+                $this->player_a_frame['stats']['hp'] = ($this->player_a_frame['stats']['hp'] - $this->player_b_frame['stats']['damage']); // calc hp after damage
+                $this->battle_frame['turn_summary'] .= $this->player_b_frame['username'] . " attacked for " . $this->player_b_frame['stats']['damage'] ." damage!\r\n";
+            } else {
+                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_b']['username'] . " attacked and missed!\r\n"; // player A miss
+            }
+        }
     }
+
 }

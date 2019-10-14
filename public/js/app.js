@@ -79053,8 +79053,10 @@ function (_Component) {
   }, {
     key: "renderTurnLogs",
     value: function renderTurnLogs() {
-      if (this.state.turn_logs) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.turn_logs);
+      if (this.state.turn_logs !== null) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+          className: "h5"
+        }, "Turn: ", this.state.turn.turn_number), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.turn_logs));
       }
 
       return;

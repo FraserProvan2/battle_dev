@@ -80,11 +80,15 @@ export default class BattleAlpha extends Component {
     }
 
     renderTurnLogs() {
-        if (this.state.turn_logs) {
+        if (this.state.turn_logs !== null) {
             return (
-                <p>
-                    {this.state.turn_logs}
-                </p>
+                <div>
+                    <hr/>
+                    <p className="h5">Turn: {this.state.turn.turn_number}</p>
+                    <p>
+                        {this.state.turn_logs}
+                    </p>
+                </div>
             );
         }
         return;
