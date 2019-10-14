@@ -69,9 +69,9 @@ export default class BattleAlpha extends Component {
                 <div>
                     <span className="h4">{player.username}</span>
                     <ul className="list-unstyled">
-                        <li className="small">HP: {player.stats.hp}</li>
-                        <li className="small">Damage: {player.stats.damage}</li>
-                        <li className="small">Speed: {player.stats.speed}</li>
+                        <li className="small">HP: {player.hp}</li>
+                        <li className="small">Damage: {player.damage}</li>
+                        <li className="small">Speed: {player.speed}</li>
                     </ul>
                 </div>
             );

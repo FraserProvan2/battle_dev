@@ -79041,11 +79041,11 @@ function (_Component) {
           className: "list-unstyled"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "small"
-        }, "HP: ", player.stats.hp), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        }, "HP: ", player.hp), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "small"
-        }, "Damage: ", player.stats.damage), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        }, "Damage: ", player.damage), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "small"
-        }, "Speed: ", player.stats.speed)));
+        }, "Speed: ", player.speed)));
       }
 
       return;

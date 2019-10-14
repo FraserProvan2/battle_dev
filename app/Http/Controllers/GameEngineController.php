@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Battle;
 use App\Events\TurnEndUpdate;
+use App\PlayerFrame;
 use App\Turn;
 use App\User;
 use Exception;
@@ -158,19 +159,15 @@ class GameEngineController extends Controller
             'turn_summary' => '',
             'player_a' => [
                 'username' => $player_a->name,
-                'stats' => [
-                    'speed' => $player_a->speed(),
-                    'damage' => $player_a->damage(),
-                    'hp' => $player_a->hp(),
-                ],
+                'speed' => $player_a->speed(),
+                'damage' => $player_a->damage(),
+                'hp' => $player_a->hp(),
             ],
             'player_b' => [
                 'username' => $player_b->name,
-                'stats' => [
-                    'speed' => $player_b->speed(),
-                    'damage' => $player_b->damage(),
-                    'hp' => $player_b->hp(),
-                ],
+                'speed' => $player_b->speed(),
+                'damage' => $player_b->damage(),
+                'hp' => $player_b->hp(),
             ],
         ];
 
@@ -193,9 +190,9 @@ class GameEngineController extends Controller
      */
     public function calcPlayerActions()
     {
-        // players
-        $this->player_a_frame = $this->battle_frame['player_a'];
-        $this->player_b_frame = $this->battle_frame['player_b'];
+        // create new PlayerFrame for each player
+        $this->player_a_frame = new PlayerFrame($this->battle_frame['player_a']);
+        $this->player_b_frame = new PlayerFrame($this->battle_frame['player_b']);
 
         // players action
         $action_a = $this->turn->player_a_action;
@@ -208,13 +205,13 @@ class GameEngineController extends Controller
         // CASE 2: both attack
         if ($action_a === 'attack' && $action_b === 'attack') {
             // if player A is faster
-            if ($this->player_a_frame['stats']['speed'] >= $this->player_b_frame['stats']['speed']) {
+
+            if ($this->player_a_frame->speed >= $this->player_b_frame->speed) {
                 $this->tryAttack('a'); // A attacks first
 
                 if (!$this->checkForWinner()) {
                     $this->tryAttack('b');
                 }
-
             }
             // else player B is faster
             else {
@@ -236,9 +233,6 @@ class GameEngineController extends Controller
             else if ($action_b === 'block') {
                 $this->tryBlock('b');
             }
-
-            // dump("player A's blocked and healed");
-
         }
 
         // update instance battle_frame of calculation results
@@ -247,9 +241,9 @@ class GameEngineController extends Controller
 
         if ($this->checkForWinner()) {
             if ($this->checkForWinner() === 'a') {
-                $this->battle_frame['turn_summary'] = "Player A wins";
+                $this->battle_frame['turn_summary'] .= "Player A wins";
             } else if ($this->checkForWinner() === 'b') {
-                $this->battle_frame['turn_summary'] = "Player B wins";
+                $this->battle_frame['turn_summary'] .= "Player B wins";
             }
 
             // END GAME, delete turn, battle and give players W/L
@@ -278,46 +272,79 @@ class GameEngineController extends Controller
         // player A attacks
         if ($player === 'a') {
             if ($attack_hit) {
-                $this->player_b_frame['stats']['hp'] = ($this->player_b_frame['stats']['hp'] - $this->player_a_frame['stats']['damage']); // calc hp after damage
-                $this->battle_frame['turn_summary'] .= $this->player_a_frame['username'] . " attacked for " . $this->player_a_frame['stats']['damage'] . " damage!\r\n";
+                $this->player_b_frame->takeDamage($this->player_a_frame->damage); // player A attack
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_a_frame->username} attacked for {$this->player_a_frame->damage} damage!\r\n";
             } else {
-                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_a']['username'] . " attacked and missed!\r\n"; // player A miss
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_a_frame->username} attacked and missed!\r\n"; // player A miss
             }
         }
         // player B attacks
         else if ($player === 'b') {
             if ($attack_hit) {
-                $this->player_a_frame['stats']['hp'] = ($this->player_a_frame['stats']['hp'] - $this->player_b_frame['stats']['damage']); // calc hp after damage
-                $this->battle_frame['turn_summary'] .= $this->player_b_frame['username'] . " attacked for " . $this->player_b_frame['stats']['damage'] . " damage!\r\n";
+                $this->player_a_frame->takeDamage($this->player_b_frame->damage); // player B attack
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_b_frame->username} attacked for {$this->player_b_frame->damage} damage!\r\n";
             } else {
-                $this->battle_frame['turn_summary'] .= $this->battle_frame['player_b']['username'] . " attacked and missed!\r\n"; // player A miss
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_b_frame->username} attacked and missed!\r\n"; // player B miss
             }
         }
     }
 
     /**
-     * 
+     * Player rolls to block opponents attack, chances of
+     * perfectly blocking (big heal), normal blocking (heal) or
+     * failing to block, and getting critically attacked
+     *
+     *  @param String a or b (Player)
      */
     public function tryBlock($player)
     {
-        // roll block (if false attack missed)
-        $block_success = true; // default: hit
         $roll = rand(1, 10);
-        if ($roll === 1) { 
-            // perfect
 
+        // 1/10 for perfect block
+        if ($roll === 1) {
+            if ($player === 'a') {
+                $this->player_a_frame->restoreHp($this->player_b_frame->damage); // restore opponents attack in HP
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_a_frame->username} perfectly blocked! Restoring {$this->player_b_frame->damage} HP!\r\n";
+            } else if ($player === 'b') {
+                $this->player_a_frame->restoreHp($this->player_a_frame->damage); // restore opponents attack in HP
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_b_frame->username} perfectly blocked! Restoring {$this->player_a_frame->damage} HP!\r\n";
+            }
         }
-
-
-        // player A blocks
-        if ($player === 'a') {
-
+        // 4/10 chance of normal block
+        else if ($roll > 1 && $roll < 6) {
+            if ($player === 'a') {
+                $heal_amount = ($this->player_a_frame->hp / 8); // players hp / 8
+                $this->player_a_frame->restoreHp($heal_amount);
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_a_frame->username} blocked! Restoring {$heal_amount} HP!\r\n";
+            } else if ($player === 'b') {
+                $heal_amount = ($this->player_b_frame->hp / 8); // players hp / 8
+                $this->player_b_frame->restoreHp($heal_amount);
+                $this->battle_frame['turn_summary'] .=
+                    "{$this->player_b_frame->username} blocked! Restoring {$heal_amount} HP!\r\n";
+            }
         }
-        // Player B blocks
-        else if ($player === 'b') {
-
+        // 1/2 of failing block
+        else if ($roll > 5) {
+            if ($player === 'a') {
+                $damage_amount = ($this->player_b_frame->damage * 2); // opponents damage * 2
+                $this->player_a_frame->takeDamage($damage_amount);
+                $this->battle_frame['turn_summary'] .=
+                    ("{$this->player_a_frame->username} block failed!
+                    {$this->player_b_frame->username} critically attacks for {$damage_amount} damage!\r\n");
+            } else if ($player === 'b') {
+                $damage_amount = ($this->player_a_frame->damage * 2); // opponents damage * 2
+                $this->battle_frame['turn_summary'] .=
+                    ("{$this->player_b_frame->username} block failed!
+                    {$this->player_a_frame->username} critically attacks for {$damage_amount} damage!\r\n");
+            }
         }
-
     }
 
     /**
@@ -328,9 +355,9 @@ class GameEngineController extends Controller
      */
     public function checkForWinner()
     {
-        if ($this->player_a_frame['stats']['hp'] <= 0) {
+        if ($this->player_a_frame->hp <= 0) {
             return 'b';
-        } else if ($this->player_b_frame['stats']['hp'] <= 0) {
+        } else if ($this->player_b_frame->hp <= 0) {
             return 'a';
         }
     }
