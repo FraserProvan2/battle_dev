@@ -78846,8 +78846,9 @@ $.ajaxSetup({
  * Battle
  */
 
-__webpack_require__(/*! ./components/battle/BattleAlpha.jsx */ "./resources/js/components/battle/BattleAlpha.jsx"); // parent
+__webpack_require__(/*! ./components/battle/BattleAlpha.jsx */ "./resources/js/components/battle/BattleAlpha.jsx");
 
+__webpack_require__(/*! ./components/battle/Finder.jsx */ "./resources/js/components/battle/Finder.jsx");
 /**
  * Profile Card
  */
@@ -78858,9 +78859,6 @@ __webpack_require__(/*! ./components/profile/Profile.jsx */ "./resources/js/comp
 /**
  * Finder
  */
-
-
-__webpack_require__(/*! ./components/finder/Finder.jsx */ "./resources/js/components/finder/Finder.jsx"); // parent
 
 /***/ }),
 
@@ -79007,7 +79005,7 @@ function (_Component) {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
+        className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -79095,9 +79093,9 @@ if (document.getElementById(bindToId)) {
 
 /***/ }),
 
-/***/ "./resources/js/components/finder/Finder.jsx":
+/***/ "./resources/js/components/battle/Finder.jsx":
 /*!***************************************************!*\
-  !*** ./resources/js/components/finder/Finder.jsx ***!
+  !*** ./resources/js/components/battle/Finder.jsx ***!
   \***************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -79230,7 +79228,7 @@ function (_Component) {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
+        className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
       }, " First Name: ", this.state.firstName), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {

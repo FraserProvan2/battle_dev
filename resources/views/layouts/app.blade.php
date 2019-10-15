@@ -12,11 +12,15 @@
 </head>
 <body>
     <div id="app">
+        <main class="py-3 container">
 
-        @include('layouts.includes.navbar')
+            @include('layouts.includes.navbar')
 
-        <main class="py-3">
-            @yield('content')
+            <div class="card rounded-0">
+                <div class="card-body">
+                </div>
+            </div>
+
         </main>
     </div>
 

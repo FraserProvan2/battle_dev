@@ -12,7 +12,7 @@ export default class Profile extends Component {
     
     render() {
         return (
-        <div className="card">
+        <div className="card h-100">
             <div className="card-header"> First Name: {this.state.firstName}</div>
             <div className="card-body">
                 <p>

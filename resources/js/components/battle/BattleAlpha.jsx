@@ -41,7 +41,7 @@ export default class BattleAlpha extends Component {
     
     render() {
         return (
-        <div className="card">
+        <div className="card h-100">
             <div className="card-header">Battle Alpha</div>
             <div className="card-body">
                 {this.renderPlayerActions()}
