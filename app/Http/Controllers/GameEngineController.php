@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Battle;
+use App\Events\AnnounceWinner;
 use App\Events\TurnEndUpdate;
 use App\PlayerFrame;
 use App\Turn;
@@ -17,8 +18,8 @@ class GameEngineController extends Controller
     public $player;
     public $player_role; // if players A or B
     public $battle;
-    public $battle_frame;
     public $turn;
+    public $battle_frame;
     public $turn_ender; // whether this action will end the turn or not
     public $action; // 'attack' or 'block'
 
@@ -55,6 +56,16 @@ class GameEngineController extends Controller
             $this->turn->update();
             $this->battle_frame['turn_summary'] = ""; // reset turn_summary
 
+            // end game is player has won
+            if ($this->checkForWinner()) {
+                
+                // end battle
+                $this->endBattle();
+                return response()->json([
+                    'message' => 'game end.',
+                ]);
+            }
+
             // prepare next turn
             $new_turn = new Turn([
                 'battle_id' => $this->battle->id,
@@ -80,7 +91,7 @@ class GameEngineController extends Controller
     /**
      * Validates and constructs the Turn/Battle objects
      * misc setters performed here as __construct doesn't have
-     * access to the Auth middlewar. Serveral checks to verify and set
+     * access to the Auth middleware. Serveral checks to verify and set
      * data for the turn, whether the user can perform action in Post request.
      *
      * @param Request request
@@ -205,10 +216,9 @@ class GameEngineController extends Controller
         // CASE 2: both attack
         if ($action_a === 'attack' && $action_b === 'attack') {
             // if player A is faster
-
             if ($this->player_a_frame->speed >= $this->player_b_frame->speed) {
                 $this->tryAttack('a'); // A attacks first
-
+                
                 if (!$this->checkForWinner()) {
                     $this->tryAttack('b');
                 }
@@ -216,6 +226,7 @@ class GameEngineController extends Controller
             // else player B is faster
             else {
                 $this->tryAttack('b'); // B attacks first
+                
                 if (!$this->checkForWinner()) {
                     $this->tryAttack('a');
                 }
@@ -235,19 +246,9 @@ class GameEngineController extends Controller
             }
         }
 
-        // update instance battle_frame of calculation results
+        // update battle_frame of calculation results
         $this->battle_frame['player_a'] = $this->player_a_frame;
         $this->battle_frame['player_b'] = $this->player_b_frame;
-
-        if ($this->checkForWinner()) {
-            if ($this->checkForWinner() === 'a') {
-                $this->battle_frame['turn_summary'] .= "Player A wins";
-            } else if ($this->checkForWinner() === 'b') {
-                $this->battle_frame['turn_summary'] .= "Player B wins";
-            }
-
-            // END GAME, delete turn, battle and give players W/L
-        }
 
         // update battle frame on Turn object
         $this->turn->battle_frame = $this->battle_frame;
@@ -360,5 +361,41 @@ class GameEngineController extends Controller
         } else if ($this->player_b_frame->hp <= 0) {
             return 'a';
         }
+    }
+
+    /**
+     * Ends the battle, assigns the players W/L,
+     * Deletes the battle + turn+;
+     * 
+     */
+    public function endBattle()
+    {
+        // figures out winner
+        if ($this->checkForWinner() === 'a') {
+            $winner = $this->battle->user_a;
+            $loser = $this->battle->user_b;
+        } 
+        else if ($this->checkForWinner() === 'b') {
+            $winner = $this->battle->user_b;
+            $loser = $this->battle->user_a;
+        }
+
+        // assign Win
+        $user_winner = User::find($winner);
+        $user_winner->wins = ($user_winner->wins + 1);
+        $user_winner->save();
+
+        // assign Loss
+        $user_loser = User::find($loser);
+        $user_loser->losses = ($user_loser->losses + 1);
+        $user_loser->save();
+
+        
+        // send final battle updates
+        TurnEndUpdate::dispatch($this->turn); // announce winner
+        AnnounceWinner::dispatch($user_winner->name, $this->battle);
+
+        // delete battle + turns
+        Battle::find($this->battle->id)->delete();
     }
 }

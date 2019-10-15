@@ -11,6 +11,7 @@ export default class BattleAlpha extends Component {
             turn_logs: null,
             player_a: null,
             player_b: null,
+            winner: null
         }
 
         // Debug
@@ -18,14 +19,20 @@ export default class BattleAlpha extends Component {
 
         // listens battle updates
         window.Echo.private(`App.Battle.${this.state.id}`)
+            // turn updates
             .listen('TurnEndUpdate', (response) => {
-                // update turn state
                 this.setState({
                     turn: response.turn,
                     turn_logs: response.turn.battle_frame.turn_summary,
                     player_a: response.turn.battle_frame.player_a,
                     player_b: response.turn.battle_frame.player_b,
                 });
+            })
+            // listen to victor
+            .listen('AnnounceWinner', (response) => {
+                this.setState({
+                    winner: response.winner_username
+                })
             });
             
         // binding `this` to functions
@@ -84,10 +91,13 @@ export default class BattleAlpha extends Component {
             return (
                 <div>
                     <hr/>
-                    <p className="h5">Turn: {this.state.turn.turn_number}</p>
+                    <p className="small py-1">Turn {this.state.turn.turn_number}</p>
                     <p>
                         {this.state.turn_logs}
                     </p>
+                    {this.state.winner &&
+                        <h5 className="text-success  text-center">{this.state.winner} Wins!!!</h5>
+                    }
                 </div>
             );
         }

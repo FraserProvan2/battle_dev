@@ -78978,18 +78978,24 @@ function (_Component) {
       turn: {},
       turn_logs: null,
       player_a: null,
-      player_b: null
+      player_b: null,
+      winner: null
     }; // Debug
 
     console.log("Battle ID: ".concat(_this.state.id)); // listens battle updates
 
-    window.Echo["private"]("App.Battle.".concat(_this.state.id)).listen('TurnEndUpdate', function (response) {
-      // update turn state
+    window.Echo["private"]("App.Battle.".concat(_this.state.id)) // turn updates
+    .listen('TurnEndUpdate', function (response) {
       _this.setState({
         turn: response.turn,
         turn_logs: response.turn.battle_frame.turn_summary,
         player_a: response.turn.battle_frame.player_a,
         player_b: response.turn.battle_frame.player_b
+      });
+    }) // listen to victor
+    .listen('AnnounceWinner', function (response) {
+      _this.setState({
+        winner: response.winner_username
       });
     }); // binding `this` to functions
 
@@ -79055,8 +79061,10 @@ function (_Component) {
     value: function renderTurnLogs() {
       if (this.state.turn_logs !== null) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-          className: "h5"
-        }, "Turn: ", this.state.turn.turn_number), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.turn_logs));
+          className: "small py-1"
+        }, "Turn ", this.state.turn.turn_number), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.turn_logs), this.state.winner && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
+          className: "text-success  text-center"
+        }, this.state.winner, " Wins!!!"));
       }
 
       return;

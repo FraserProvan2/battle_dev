@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('avatar');
-            
+            $table->integer('wins')->default(0);
+            $table->integer('losses')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
