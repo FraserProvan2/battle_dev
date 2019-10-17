@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>battle_dev</title>
     <script src="{{ mix('js/app.js') }}" defer></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,6 +18,7 @@
 
             <div class="card rounded-0">
                 <div class="card-body">
+                    @yield('content')
                 </div>
             </div>
 

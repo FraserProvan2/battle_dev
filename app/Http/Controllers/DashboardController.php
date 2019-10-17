@@ -28,15 +28,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // checks if users in current battle, if so get battle data (TEMP)
-        $current_battle = null;
-        if(Auth::user() && Auth::user()->getBattle()) {
-            $current_battle = Auth::user()->getBattle();
-            // Test::dispatch(Auth::user()->getBattle());
-        }
-    
-        return view('dashboard', [
-            'current_battle' => $current_battle
-        ]);
+        return view('dashboard');
     }
 }

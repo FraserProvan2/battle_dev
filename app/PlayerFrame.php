@@ -33,7 +33,4 @@ class PlayerFrame
     {
         $this->hp = $this->hp + $hp;
     }
-
-
-
 }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-export default class BattleAlpha extends Component {
+export default class Game extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            id: this.props.battleId,
+            id: this.props.battle_id,
             turn: {},
             turn_logs: null,
             player_a: null,
@@ -110,14 +110,4 @@ export default class BattleAlpha extends Component {
             action: playersAction
         });
     }
-}
-
-// Rendering 
-const bindToId = 'battle';
-
-if (document.getElementById(bindToId)) {
-    const element = document.getElementById(bindToId)
-    const props = Object.assign({}, element.dataset) //binds data attributes
-
-    ReactDOM.render(<BattleAlpha {...props}/>, element);
 }

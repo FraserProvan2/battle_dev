@@ -26,13 +26,3 @@ export default class Finder extends Component {
         )
     }
 }
-
-// Rendering 
-const bindToId = 'finder';
-
-if (document.getElementById(bindToId)) {
-    const element = document.getElementById(bindToId)
-    const props = Object.assign({}, element.dataset) //binds data attributes
-
-    ReactDOM.render(<Finder {...props}/>, element);
-}

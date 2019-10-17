@@ -78846,19 +78846,18 @@ $.ajaxSetup({
  * Battle
  */
 
-__webpack_require__(/*! ./components/battle/BattleAlpha.jsx */ "./resources/js/components/battle/BattleAlpha.jsx");
+__webpack_require__(/*! ./components/battle/Battle.jsx */ "./resources/js/components/battle/Battle.jsx"); // parent
 
-__webpack_require__(/*! ./components/battle/Finder.jsx */ "./resources/js/components/battle/Finder.jsx");
+
+__webpack_require__(/*! ./components/battle/_Finder.jsx */ "./resources/js/components/battle/_Finder.jsx");
+
+__webpack_require__(/*! ./components/battle/_Game.jsx */ "./resources/js/components/battle/_Game.jsx");
 /**
  * Profile Card
  */
 
 
 __webpack_require__(/*! ./components/profile/Profile.jsx */ "./resources/js/components/profile/Profile.jsx"); // parent
-
-/**
- * Finder
- */
 
 /***/ }),
 
@@ -78925,16 +78924,192 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/BattleAlpha.jsx":
-/*!********************************************************!*\
-  !*** ./resources/js/components/battle/BattleAlpha.jsx ***!
-  \********************************************************/
+/***/ "./resources/js/components/battle/Battle.jsx":
+/*!***************************************************!*\
+  !*** ./resources/js/components/battle/Battle.jsx ***!
+  \***************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BattleAlpha; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Battle; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Game */ "./resources/js/components/battle/_Game.jsx");
+/* harmony import */ var _Finder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_Finder */ "./resources/js/components/battle/_Finder.jsx");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+var Battle =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Battle, _Component);
+
+  function Battle(props) {
+    var _this;
+
+    _classCallCheck(this, Battle);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Battle).call(this, props));
+    _this.state = {
+      battle_id: null
+    }; // check if in battle, if so set battle ID
+
+    _this.tryGetBattle(); // listen for if battle starts
+
+
+    return _this;
+  }
+
+  _createClass(Battle, [{
+    key: "render",
+    value: function render() {
+      // if in battle, render battle
+      if (this.state.battle_id) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_2__["default"], {
+          battle_id: this.state.battle_id
+        });
+      } // else render battle finder
+
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Finder__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+    } // check if users in battle, set ID if so
+
+  }, {
+    key: "tryGetBattle",
+    value: function tryGetBattle() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('battle/check').then(function (response) {
+        _this2.setState({
+          battle_id: response.data
+        });
+      });
+    }
+  }]);
+
+  return Battle;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering 
+
+
+
+var bindToId = 'battle';
+
+if (document.getElementById(bindToId)) {
+  var element = document.getElementById(bindToId);
+  var props = Object.assign({}, element.dataset); //binds data attributes
+
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Battle, props), element);
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/battle/_Finder.jsx":
+/*!****************************************************!*\
+  !*** ./resources/js/components/battle/_Finder.jsx ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Finder; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var Finder =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Finder, _Component);
+
+  function Finder(props) {
+    var _this;
+
+    _classCallCheck(this, Finder);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
+    _this.state = {};
+    return _this;
+  }
+
+  _createClass(Finder, [{
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header"
+      }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "This will be a list of users currently looking for a Battle, with an accept button If they click on the button when no auth, they be redirected to the github login.")));
+    }
+  }]);
+
+  return Finder;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/battle/_Game.jsx":
+/*!**************************************************!*\
+  !*** ./resources/js/components/battle/_Game.jsx ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
@@ -78960,19 +79135,19 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var BattleAlpha =
+var Game =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(BattleAlpha, _Component);
+  _inherits(Game, _Component);
 
-  function BattleAlpha(props) {
+  function Game(props) {
     var _this;
 
-    _classCallCheck(this, BattleAlpha);
+    _classCallCheck(this, Game);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(BattleAlpha).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
     _this.state = {
-      id: _this.props.battleId,
+      id: _this.props.battle_id,
       turn: {},
       turn_logs: null,
       player_a: null,
@@ -79001,7 +79176,7 @@ function (_Component) {
     return _this;
   }
 
-  _createClass(BattleAlpha, [{
+  _createClass(Game, [{
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -79077,98 +79252,10 @@ function (_Component) {
     }
   }]);
 
-  return BattleAlpha;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering 
+  return Game;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 
-
-var bindToId = 'battle';
-
-if (document.getElementById(bindToId)) {
-  var element = document.getElementById(bindToId);
-  var props = Object.assign({}, element.dataset); //binds data attributes
-
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(BattleAlpha, props), element);
-}
-
-/***/ }),
-
-/***/ "./resources/js/components/battle/Finder.jsx":
-/*!***************************************************!*\
-  !*** ./resources/js/components/battle/Finder.jsx ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Finder; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-
-
-
-var Finder =
-/*#__PURE__*/
-function (_Component) {
-  _inherits(Finder, _Component);
-
-  function Finder(props) {
-    var _this;
-
-    _classCallCheck(this, Finder);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
-    _this.state = {};
-    return _this;
-  }
-
-  _createClass(Finder, [{
-    key: "render",
-    value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-header"
-      }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "This will be a list of users currently looking for a Battle, with an accept button If they click on the button when no auth, they be redirected to the github login.")));
-    }
-  }]);
-
-  return Finder;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering 
-
-
-
-var bindToId = 'finder';
-
-if (document.getElementById(bindToId)) {
-  var element = document.getElementById(bindToId);
-  var props = Object.assign({}, element.dataset); //binds data attributes
-
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Finder, props), element);
-}
 
 /***/ }),
 

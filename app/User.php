@@ -41,7 +41,7 @@ class User extends Authenticatable
      *
      * @return Battle collection
      */
-    public function getBattle()
+    public static function getBattle()
     {
         $user_id = auth()->id();
 

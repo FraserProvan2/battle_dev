@@ -18,4 +18,8 @@ Route::post('logout', 'Auth\AccountController@logout')->name('logout');
 | Battle Routes
 |----------------------------------------------------------------------*/
 
+// Player Actions/Battle progression
 Route::post('battle', 'GameEngineController@main');
+
+// Battle lobby
+Route::get('battle/check', 'GameLobbyController@tryGetBattle');

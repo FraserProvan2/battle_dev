@@ -365,7 +365,7 @@ class GameEngineController extends Controller
 
     /**
      * Ends the battle, assigns the players W/L,
-     * Deletes the battle + turn+;
+     * Deletes the battle + turn
      * 
      */
     public function endBattle()
@@ -389,7 +389,6 @@ class GameEngineController extends Controller
         $user_loser = User::find($loser);
         $user_loser->losses = ($user_loser->losses + 1);
         $user_loser->save();
-
         
         // send final battle updates
         TurnEndUpdate::dispatch($this->turn); // announce winner
