@@ -45,10 +45,12 @@ class User extends Authenticatable
     {
         $user_id = auth()->id();
 
-        return DB::table('battles')
+        $battle_id = DB::table('battles')
             ->where('user_a', $user_id)
             ->orWhere('user_b', $user_id)
-            ->first();
+            ->pluck('id');
+
+        return Battle::where('id', $battle_id)->first();
     }
 
     public function speed()

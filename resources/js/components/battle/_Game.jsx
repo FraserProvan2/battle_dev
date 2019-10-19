@@ -14,19 +14,18 @@ export default class Game extends Component {
             winner: null
         }
 
-        // Debug
-        console.log(`Battle ID: ${this.state.id}`);
-
         // listens battle updates
         window.Echo.private(`App.Battle.${this.state.id}`)
             // turn updates
             .listen('TurnEndUpdate', (response) => {
-                this.setState({
-                    turn: response.turn,
-                    turn_logs: response.turn.battle_frame.turn_summary,
-                    player_a: response.turn.battle_frame.player_a,
-                    player_b: response.turn.battle_frame.player_b,
-                });
+                if (response.turn.battle_frame) {
+                    this.setState({
+                        turn: response.turn,
+                        turn_logs: response.turn.battle_frame.turn_summary,
+                        player_a: response.turn.battle_frame.player_a,
+                        player_b: response.turn.battle_frame.player_b,
+                    });
+                }
             })
             // listen to victor
             .listen('AnnounceWinner', (response) => {
@@ -34,6 +33,8 @@ export default class Game extends Component {
                     winner: response.winner_username
                 })
             });
+
+        this.updateBattleData(); // load current turn data
             
         // binding `this` to functions
         this.playerAction = this.playerAction.bind(this);
@@ -51,6 +52,7 @@ export default class Game extends Component {
         )
     }
 
+    // render action buttons
     renderPlayerActions() {
         return (
             <div className="row">
@@ -70,6 +72,7 @@ export default class Game extends Component {
         )
     }
 
+    // render player stats
     renderPlayerStats(player) {
         if (player) {
             return (
@@ -86,6 +89,7 @@ export default class Game extends Component {
         return;
     }
 
+    // render logs
     renderTurnLogs() {
         if (this.state.turn_logs !== null) {
             return (
@@ -104,6 +108,12 @@ export default class Game extends Component {
         return;
     }
 
+    // check if users in battle, set ID if so
+    updateBattleData() {
+        axios.get(`battle/dispatch/${this.props.battle_id}`);
+    }
+
+    // attempts to register players action
     playerAction(playersAction) {
         axios.post(`/battle`, { 
             battle: this.state.id,

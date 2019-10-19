@@ -317,7 +317,7 @@ class GameEngineController extends Controller
                     "{$this->player_b_frame->username} perfectly blocked! Restoring {$this->player_a_frame->damage} HP!\r\n";
             }
         }
-        // 4/10 chance of normal block
+        // 2-5 rolls normal block
         else if ($roll > 1 && $roll < 6) {
             if ($player === 'a') {
                 $heal_amount = ($this->player_a_frame->hp / 8); // players hp / 8
@@ -331,7 +331,7 @@ class GameEngineController extends Controller
                     "{$this->player_b_frame->username} blocked! Restoring {$heal_amount} HP!\r\n";
             }
         }
-        // 1/2 of failing block
+        // 5-10 rolls fail to block
         else if ($roll > 5) {
             if ($player === 'a') {
                 $damage_amount = ($this->player_b_frame->damage * 2); // opponents damage * 2

@@ -5,7 +5,9 @@ export default class Finder extends Component {
     constructor(props) {
         super(props)
  
-        this.state = {}
+        this.state = {
+            players: []
+        }
     }
     
     render() {
@@ -13,13 +15,14 @@ export default class Finder extends Component {
         <div className="card">
             <div className="card-header">Battle Finder</div>
             <div className="card-body">
-                <p>
-                    This will be a list of users currently looking for a Battle,
-                    with an accept button
 
-                    If they click on the button when no auth, they be redirected to the
-                    github login.
-                </p>
+            <ul className="list-group">
+                {this.renderPlayers}
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  Player
+                  {/* <span className="badge badge-primary badge-pill">14</span> */}
+                </li>
+            </ul>
 
             </div>
         </div>

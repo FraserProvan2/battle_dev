@@ -22,4 +22,5 @@ Route::post('logout', 'Auth\AccountController@logout')->name('logout');
 Route::post('battle', 'GameEngineController@main');
 
 // Battle lobby
-Route::get('battle/check', 'GameLobbyController@tryGetBattle');
+Route::get('battle/check', 'GameLobbyController@getBattleData');
+Route::get('battle/dispatch/{turn_id}', 'GameLobbyController@dispatchBattleData');

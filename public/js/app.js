@@ -79007,9 +79007,11 @@ function (_Component) {
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('battle/check').then(function (response) {
-        _this2.setState({
-          battle_id: response.data
-        });
+        if (response.data.battle) {
+          _this2.setState({
+            battle_id: response.data.battle.id
+          });
+        }
       });
     }
   }]);
@@ -79076,7 +79078,9 @@ function (_Component) {
     _classCallCheck(this, Finder);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
-    _this.state = {};
+    _this.state = {
+      players: []
+    };
     return _this;
   }
 
@@ -79089,7 +79093,11 @@ function (_Component) {
         className: "card-header"
       }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "This will be a list of users currently looking for a Battle, with an accept button If they click on the button when no auth, they be redirected to the github login.")));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+        className: "list-group"
+      }, this.renderPlayers, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        className: "list-group-item d-flex justify-content-between align-items-center"
+      }, "Player"))));
     }
   }]);
 
@@ -79153,24 +79161,28 @@ function (_Component) {
       player_a: null,
       player_b: null,
       winner: null
-    }; // Debug
-
-    console.log("Battle ID: ".concat(_this.state.id)); // listens battle updates
+    }; // listens battle updates
 
     window.Echo["private"]("App.Battle.".concat(_this.state.id)) // turn updates
     .listen('TurnEndUpdate', function (response) {
-      _this.setState({
-        turn: response.turn,
-        turn_logs: response.turn.battle_frame.turn_summary,
-        player_a: response.turn.battle_frame.player_a,
-        player_b: response.turn.battle_frame.player_b
-      });
+      if (response.turn.battle_frame) {
+        _this.setState({
+          turn: response.turn,
+          turn_logs: response.turn.battle_frame.turn_summary,
+          player_a: response.turn.battle_frame.player_a,
+          player_b: response.turn.battle_frame.player_b
+        });
+      }
     }) // listen to victor
     .listen('AnnounceWinner', function (response) {
       _this.setState({
         winner: response.winner_username
       });
-    }); // binding `this` to functions
+    });
+
+    _this.updateBattleData(); // load current turn data
+    // binding `this` to functions
+
 
     _this.playerAction = _this.playerAction.bind(_assertThisInitialized(_this));
     return _this;
@@ -79186,7 +79198,8 @@ function (_Component) {
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
       }, this.renderPlayerActions(), this.renderTurnLogs()));
-    }
+    } // render action buttons
+
   }, {
     key: "renderPlayerActions",
     value: function renderPlayerActions() {
@@ -79209,7 +79222,8 @@ function (_Component) {
           return _this2.playerAction("block");
         }
       }, "Block")));
-    }
+    } // render player stats
+
   }, {
     key: "renderPlayerStats",
     value: function renderPlayerStats(player) {
@@ -79228,7 +79242,8 @@ function (_Component) {
       }
 
       return;
-    }
+    } // render logs
+
   }, {
     key: "renderTurnLogs",
     value: function renderTurnLogs() {
@@ -79241,7 +79256,14 @@ function (_Component) {
       }
 
       return;
-    }
+    } // check if users in battle, set ID if so
+
+  }, {
+    key: "updateBattleData",
+    value: function updateBattleData() {
+      axios.get("battle/dispatch/".concat(this.props.battle_id));
+    } // attempts to register players action
+
   }, {
     key: "playerAction",
     value: function playerAction(playersAction) {

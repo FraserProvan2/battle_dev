@@ -24,7 +24,7 @@ export default class Battle extends Component {
             return <Game 
                 battle_id={this.state.battle_id}
             />
-        }
+        } 
 
         // else render battle finder
         return <Finder />
@@ -33,9 +33,11 @@ export default class Battle extends Component {
     // check if users in battle, set ID if so
     tryGetBattle() {
         axios.get('battle/check').then(response => {
-            this.setState({
-                battle_id: response.data
-            });
+            if (response.data.battle) {
+                this.setState({
+                    battle_id: response.data.battle.id
+                });
+            }
         });
     }
 }
