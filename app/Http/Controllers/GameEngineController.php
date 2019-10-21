@@ -106,37 +106,39 @@ class GameEngineController extends Controller
         ]);
 
         // set globals for battle instance (Battle/Turn)
-        $this->player = Auth::user();
-        $this->action = $request->action;
-        $this->battle = Battle::find($request->battle);
-        $this->turn = $this->battle->getTurn();
+        try {
+            $this->player = Auth::user();
+            $this->action = $request->action;
+            $this->battle = Battle::find($request->battle);
+            $this->turn = $this->battle->getTurn();
 
-        // generate battle frame if round 1
-        if ($this->turn->turn_number === 1) {
-            $this->generateBattleFrame();
-        }
-        // else get previous turns battle frame
-        else {
-            $this->battle_frame = $this->battle->getTurn()->battle_frame;
-        }
+            // generate battle frame if round 1
+            if ($this->turn->turn_number == 1) {
+                $this->generateBattleFrame();
+            }
+            // else get previous turns battle frame
+            else {
+                $this->battle_frame = $this->battle->getTurn()->battle_frame;
+            }
+            
+            // set $this->player_role
+            if ($this->player->id == $this->battle->user_a) {
+                $this->player_role = "a";
+            } else if ($this->player->id === $this->battle->user_b) {
+                $this->player_role = "b";
+            }
 
-        // set $this->player_role
-        if ($this->player->id === $this->battle->user_a) {
-            $this->player_role = "a";
-        } else if ($this->player->id === $this->battle->user_b) {
-            $this->player_role = "b";
+            // check if the current action will end turn or not
+            if (!$this->turn->player_a_action && !$this->turn->player_b_action) {
+                $this->turn_ender = false;
+            } else if (!$this->turn->player_a_action && $this->turn->player_b_action ||
+                $this->turn->player_a_action && !$this->turn->player_b_action) {
+                $this->turn_ender = true;
+            } 
+        } catch (Exception $e) {
+            throw new Exception("Error setting globals");
         }
-
-        // check if the current action will end turn or not
-        if (!$this->turn->player_a_action && !$this->turn->player_b_action) {
-            $this->turn_ender = false;
-        } else if (!$this->turn->player_a_action && $this->turn->player_b_action ||
-            $this->turn->player_a_action && !$this->turn->player_b_action) {
-            $this->turn_ender = true;
-        } else {
-            throw new Exception("Error setting frame");
-        }
-
+        
         // set players action this turn, catch if already actioned this turns
         if ($this->player_role === 'a') {
             // check if user has already actioned
