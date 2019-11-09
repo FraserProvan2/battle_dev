@@ -15,3 +15,10 @@ clear_cache:
 	php artisan route:cache
 	php artisan config:clear
 	php artisan view:clear 
+
+docker_start:
+	docker-compose up -d nginx php-fpm mysql
+	docker-compose exec workspace bash
+
+docker_stop:
+	docker-compose down
