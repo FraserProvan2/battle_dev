@@ -18,7 +18,13 @@ GITHUB_CLIENT_SECRET
 PUSHER_APP_ID
 PUSHER_APP_KEY
 PUSHER_APP_SECRET
+3. run `php artisan migrate` to migrate database tables
 
 #### Workflow Commands
 These commands are executed in the workspace shall
 
+`npm run watch`
+
+`make test`
+
+`make clear_cache`
