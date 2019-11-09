@@ -2,13 +2,14 @@
 
 1. `make docker_create` to create the necessary containers
 2. `make docker_up` to spin up the containers and open and shell
-NOTE: to stop docker run `make docker_down`
-NOTE: to see all  commands at this level, look at Makefile in the project root
+NOTE: To stop docker run `make docker_down`
+NOTE: To see all  commands at this level, look at Makefile in the project root
 3. Add the following to your hosts file
 ```
 127.0.0.1	battledev.test
 127.0.0.1   mysql
 ```
+Note: To connect to mysql database use: host: `127.0.0.1`, username: `root`, password: `root`
 
 now you are in the workspace shell, you can use make targets from application/Makefile
 1. `make create_local`
