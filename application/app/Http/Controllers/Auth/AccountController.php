@@ -30,7 +30,7 @@ class AccountController extends Controller
     public function handleProviderCallback()
     {
         try {
-            $user = Socialite::driver('github')->stateless()->user(); //FIX
+            $user = Socialite::driver('github')->stateless()->user();
         } catch (Exception $e) {
             return Redirect::to('auth/github');
         }

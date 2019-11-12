@@ -13,14 +13,17 @@
             @else 
                 {{-- Player Profile --}}
                 <div id="profile" 
-                    data-first-name="nath"
+                    data-first-name="{{ Auth::user()->name }}"
+                    data-hello
                 ></div> 
             @endguest
-        </div>
+        </div> 
 
         {{-- Battle Finder/Battle Scene --}}
         <div class="col-md-8">
-            <div id="battle"></div>
+            <div id="battle"
+                data-load-data="{{ $load_data }}"
+            ></div>
         </div>
     </div>
 

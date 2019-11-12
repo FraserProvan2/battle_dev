@@ -78917,7 +78917,7 @@ if (token) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
+  key: "7baf8d18caa9904fbf42",
   cluster: "eu",
   encrypted: true
 });
@@ -78940,8 +78940,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Game */ "./resources/js/components/battle/_Game.jsx");
 /* harmony import */ var _Finder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_Finder */ "./resources/js/components/battle/_Finder.jsx");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_Loader */ "./resources/js/components/battle/_Loader.jsx");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -78966,6 +78967,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var Battle =
 /*#__PURE__*/
 function (_Component) {
@@ -78982,6 +78984,11 @@ function (_Component) {
     }; // check if in battle, if so set battle ID
 
     _this.tryGetBattle(); // listen for if battle starts
+    // TEMP
+    // axios.post(`/battle`, { 
+    //     battle: 1,
+    //     action: "attack"
+    // });
 
 
     return _this;
@@ -78993,7 +79000,8 @@ function (_Component) {
       // if in battle, render battle
       if (this.state.battle_id) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          battle_id: this.state.battle_id
+          battle_id: this.state.battle_id,
+          load_data: this.props.loadData
         });
       } // else render battle finder
 
@@ -79006,7 +79014,7 @@ function (_Component) {
     value: function tryGetBattle() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('battle/check').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('battle/check').then(function (response) {
         if (response.data.battle) {
           _this2.setState({
             battle_id: response.data.battle.id
@@ -79029,6 +79037,142 @@ if (document.getElementById(bindToId)) {
 
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Battle, props), element);
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/battle/BattleContainer/_PlayerInput.jsx":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/battle/BattleContainer/_PlayerInput.jsx ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
+  var user = _ref.user,
+      player = _ref.player,
+      battle = _ref.battle;
+
+  function playerAction(action) {
+    axios.post("/battle", {
+      battle: battle,
+      action: action
+    });
+  }
+
+  if (user.name == player.username) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "d-flex"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      className: "btn btn-primary w-100",
+      onClick: function onClick() {
+        return playerAction("block");
+      }
+    }, "Block"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      className: "btn btn-primary w-100",
+      onClick: function onClick() {
+        return playerAction("attack");
+      }
+    }, "Attack"));
+  }
+
+  return null;
+});
+
+/***/ }),
+
+/***/ "./resources/js/components/battle/BattleContainer/_Scene.jsx":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/battle/BattleContainer/_Scene.jsx ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _PlayerInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_PlayerInput */ "./resources/js/components/battle/BattleContainer/_PlayerInput.jsx");
+
+
+
+function Loader() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "d-flex flex-1 justify-content-center text-dark py-4"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fas fa-3x fa-circle-notch fa-spin"
+  }));
+}
+
+function PlayerCard(_ref) {
+  var player = _ref.player,
+      assets = _ref.assets;
+  var avatar = player.avatar,
+      username = player.username,
+      speed = player.speed,
+      hp = player.hp,
+      damage = player.damage;
+  var hp_stat_icon = assets.hp_stat_icon,
+      speed_stat_icon = assets.speed_stat_icon,
+      attack_stat_icon = assets.attack_stat_icon;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "d-flex flex-column align-items-center"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: avatar,
+    className: "rounded-circle battle-player-img"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+    className: "list-unstyled d-flex justify-content-space-between my-2"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+    className: "mx-1 d-flex align-items-center"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: hp_stat_icon,
+    className: "battle-player-stat-icon"
+  }), hp), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+    className: "mx-1 d-flex align-items-center mx-3"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: attack_stat_icon,
+    className: "battle-player-stat-icon"
+  }), damage), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+    className: "mx-1 d-flex align-items-center"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: speed_stat_icon,
+    className: "battle-player-stat-icon"
+  }), speed)));
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (function (_ref2) {
+  var player_a = _ref2.player_a,
+      player_b = _ref2.player_b,
+      assets = _ref2.assets,
+      user = _ref2.user,
+      id = _ref2.id;
+  if (!player_a || !player_b) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader, null);
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PlayerCard, {
+    assets: assets,
+    player: player_a
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    user: user,
+    player: player_a,
+    battle: id
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PlayerCard, {
+    assets: assets,
+    player: player_b
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    user: user,
+    player: player_b,
+    battle: id
+  })));
+});
 
 /***/ }),
 
@@ -79122,6 +79266,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BattleContainer/_Scene */ "./resources/js/components/battle/BattleContainer/_Scene.jsx");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79132,13 +79277,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -79154,13 +79300,16 @@ function (_Component) {
     _classCallCheck(this, Game);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
+    var load_data = JSON.parse(props.load_data);
     _this.state = {
       id: _this.props.battle_id,
       turn: {},
       turn_logs: null,
       player_a: null,
       player_b: null,
-      winner: null
+      winner: null,
+      assets: load_data.assets,
+      user: load_data.user
     }; // listens battle updates
 
     window.Echo["private"]("App.Battle.".concat(_this.state.id)) // turn updates
@@ -79181,67 +79330,23 @@ function (_Component) {
     });
 
     _this.updateBattleData(); // load current turn data
-    // binding `this` to functions
 
 
-    _this.playerAction = _this.playerAction.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Game, [{
     key: "render",
     value: function render() {
+      var turn = this.state.turn;
+      if (!turn) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader, null);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, this.renderPlayerActions(), this.renderTurnLogs()));
-    } // render action buttons
-
-  }, {
-    key: "renderPlayerActions",
-    value: function renderPlayerActions() {
-      var _this2 = this;
-
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "row"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-6"
-      }, this.renderPlayerStats(this.state.player_a), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn btn-primary w-100",
-        onClick: function onClick() {
-          return _this2.playerAction("attack");
-        }
-      }, "Attack")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-6"
-      }, this.renderPlayerStats(this.state.player_b), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn btn-primary w-100",
-        onClick: function onClick() {
-          return _this2.playerAction("block");
-        }
-      }, "Block")));
-    } // render player stats
-
-  }, {
-    key: "renderPlayerStats",
-    value: function renderPlayerStats(player) {
-      if (player) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-          className: "h4"
-        }, player.username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
-          className: "list-unstyled"
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          className: "small"
-        }, "HP: ", player.hp), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          className: "small"
-        }, "Damage: ", player.damage), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          className: "small"
-        }, "Speed: ", player.speed)));
-      }
-
-      return;
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_2__["default"], this.state), this.renderTurnLogs()));
     } // render logs
 
   }, {
@@ -79262,15 +79367,6 @@ function (_Component) {
     key: "updateBattleData",
     value: function updateBattleData() {
       axios.get("battle/dispatch/".concat(this.props.battle_id));
-    } // attempts to register players action
-
-  }, {
-    key: "playerAction",
-    value: function playerAction(playersAction) {
-      axios.post("/battle", {
-        battle: this.state.id,
-        action: playersAction
-      });
     }
   }]);
 
@@ -79278,6 +79374,28 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/battle/_Loader.jsx":
+/*!****************************************************!*\
+  !*** ./resources/js/components/battle/_Loader.jsx ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "d-flex flex-1 justify-content-center text-dark py-4"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fas fa-3x fa-circle-notch fa-spin"
+  }));
+});
 
 /***/ }),
 
@@ -79380,8 +79498,8 @@ if (document.getElementById(bindToId)) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/fraserprovan/Documents/projects/battle_dev/application/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/fraserprovan/Documents/projects/battle_dev/application/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

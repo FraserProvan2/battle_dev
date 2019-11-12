@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Game from './_Game';
 import Finder from './_Finder';
+import Loader from './_Loader';
 import axios from 'axios';
 
 export default class Battle extends Component {
     constructor(props) {
         super(props)
- 
+
         this.state = {
             battle_id: null
         }
@@ -16,13 +17,20 @@ export default class Battle extends Component {
         this.tryGetBattle(); 
 
         // listen for if battle starts
+
+        // TEMP
+            // axios.post(`/battle`, { 
+            //     battle: 1,
+            //     action: "attack"
+            // });
     }
-    
+
     render() {
         // if in battle, render battle
         if (this.state.battle_id) {
             return <Game 
                 battle_id={this.state.battle_id}
+                load_data={this.props.loadData}
             />
         } 
 

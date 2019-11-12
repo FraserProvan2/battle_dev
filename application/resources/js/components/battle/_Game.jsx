@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+import BattleContainer from "./BattleContainer/_Scene"
+
 export default class Game extends Component {
     constructor(props) {
         super(props)
+
+        const load_data = JSON.parse(props.load_data);
 
         this.state = {
             id: this.props.battle_id,
@@ -11,7 +15,9 @@ export default class Game extends Component {
             turn_logs: null,
             player_a: null,
             player_b: null,
-            winner: null
+            winner: null,
+            assets: load_data.assets,
+            user: load_data.user,
         }
 
         // listens battle updates
@@ -35,58 +41,20 @@ export default class Game extends Component {
             });
 
         this.updateBattleData(); // load current turn data
-            
-        // binding `this` to functions
-        this.playerAction = this.playerAction.bind(this);
     }
     
     render() {
+        const {turn} = this.state
+        if (!turn) return <Loader />
         return (
-        <div className="card h-100">
-            <div className="card-header">Battle Alpha</div>
-            <div className="card-body">
-                {this.renderPlayerActions()}
-                {this.renderTurnLogs()}
-            </div>
-        </div>
-        )
-    }
-
-    // render action buttons
-    renderPlayerActions() {
-        return (
-            <div className="row">
-                <div className="col-md-6">
-                    {this.renderPlayerStats(this.state.player_a)}
-                    <a className="btn btn-primary w-100" onClick={() => this.playerAction("attack")}>
-                        Attack
-                    </a>
-                </div>
-                <div className="col-md-6">
-                    {this.renderPlayerStats(this.state.player_b)}
-                    <a className="btn btn-primary w-100" onClick={() => this.playerAction("block")}>
-                        Block
-                    </a>
+            <div className="card h-100">
+                <div className="card-header">Battle Alpha</div>
+                <div className="card-body">
+                    <BattleContainer {...this.state} />
+                    {this.renderTurnLogs()}
                 </div>
             </div>
         )
-    }
-
-    // render player stats
-    renderPlayerStats(player) {
-        if (player) {
-            return (
-                <div>
-                    <span className="h4">{player.username}</span>
-                    <ul className="list-unstyled">
-                        <li className="small">HP: {player.hp}</li>
-                        <li className="small">Damage: {player.damage}</li>
-                        <li className="small">Speed: {player.speed}</li>
-                    </ul>
-                </div>
-            );
-        } 
-        return;
     }
 
     // render logs
@@ -111,13 +79,5 @@ export default class Game extends Component {
     // check if users in battle, set ID if so
     updateBattleData() {
         axios.get(`battle/dispatch/${this.props.battle_id}`);
-    }
-
-    // attempts to register players action
-    playerAction(playersAction) {
-        axios.post(`/battle`, { 
-            battle: this.state.id,
-            action: playersAction
-        });
     }
 }

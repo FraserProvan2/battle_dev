@@ -12,6 +12,7 @@ class PlayerFrame
      */
 
     public $username;
+    public $avatar;
     public $damage;
     public $speed;
     public $hp;
@@ -19,6 +20,7 @@ class PlayerFrame
     public function __construct(Array $player_stats)
     {
         $this->username = $player_stats['username'];
+        $this->avatar = $player_stats['avatar'];
         $this->damage = $player_stats['damage'];
         $this->speed = $player_stats['speed'];
         $this->hp = $player_stats['hp'];

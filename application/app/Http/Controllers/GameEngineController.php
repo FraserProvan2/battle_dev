@@ -172,12 +172,14 @@ class GameEngineController extends Controller
             'turn_summary' => '',
             'player_a' => [
                 'username' => $player_a->name,
+                'avatar' => $player_a->avatar, 
                 'speed' => $player_a->speed(),
                 'damage' => $player_a->damage(),
                 'hp' => $player_a->hp(),
             ],
             'player_b' => [
                 'username' => $player_b->name,
+                'avatar' => $player_b->avatar, 
                 'speed' => $player_b->speed(),
                 'damage' => $player_b->damage(),
                 'hp' => $player_b->hp(),
