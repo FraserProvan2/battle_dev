@@ -78913,7 +78913,7 @@ if (token) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
+  key: "7baf8d18caa9904fbf42",
   cluster: "eu",
   encrypted: true
 });
@@ -78981,12 +78981,12 @@ function (_Component) {
 
     _this.tryGetBattle(); // listen for if battle starts
     // TEMP
+    // axios.post(`/battle`, { 
+    //     battle: 1,
+    //     action: "attack"
+    // });
 
 
-    axios__WEBPACK_IMPORTED_MODULE_5___default.a.post("/battle", {
-      battle: 1,
-      action: "attack"
-    });
     return _this;
   }
 

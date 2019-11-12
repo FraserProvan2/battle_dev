@@ -19,10 +19,10 @@ export default class Battle extends Component {
         // listen for if battle starts
 
         // TEMP
-            axios.post(`/battle`, { 
-                battle: 1,
-                action: "attack"
-            });
+            // axios.post(`/battle`, { 
+            //     battle: 1,
+            //     action: "attack"
+            // });
     }
 
     render() {
