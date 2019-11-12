@@ -24,3 +24,7 @@ Route::post('battle', 'GameEngineController@main');
 // Battle lobby
 Route::get('battle/check', 'GameLobbyController@getBattleData');
 Route::get('battle/dispatch/{turn_id}', 'GameLobbyController@dispatchBattleData');
+    
+    // Invites
+    Route::get('invites/getAll', 'InvitesController@getAll');
+    

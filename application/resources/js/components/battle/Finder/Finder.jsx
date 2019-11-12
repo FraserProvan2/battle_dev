@@ -6,8 +6,10 @@ export default class Finder extends Component {
         super(props)
  
         this.state = {
-            players: []
+            invites: []
         }
+
+        this.getInvites();
     }
     
     render() {
@@ -16,16 +18,29 @@ export default class Finder extends Component {
             <div className="card-header">Battle Finder</div>
             <div className="card-body">
 
-            <ul className="list-group">
-                {this.renderPlayers}
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Player
-                  {/* <span className="badge badge-primary badge-pill">14</span> */}
-                </li>
-            </ul>
+                <ul className="list-group">
+
+                    {/* ITERATE OVER this.state.invites */}
+                    <li className="list-group-item d-flex justify-content-between align-items-center">
+                        Player
+                        <button className="btn btn-primary">Accept</button>
+                    </li>
+
+                </ul>
 
             </div>
         </div>
         )
+    }
+
+    getInvites() {
+        axios.get('invites/getAll').then(response => {
+            if (response.data) {
+                this.setState({
+                    invites: response.data
+                });
+            }
+            console.log(this.state.invites);
+        });
     }
 }

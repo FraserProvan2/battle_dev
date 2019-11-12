@@ -79219,8 +79219,11 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
     _this.state = {
-      players: []
+      invites: []
     };
+
+    _this.getInvites();
+
     return _this;
   }
 
@@ -79235,9 +79238,26 @@ function (_Component) {
         className: "card-body"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "list-group"
-      }, this.renderPlayers, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         className: "list-group-item d-flex justify-content-between align-items-center"
-      }, "Player"))));
+      }, "Player", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-primary"
+      }, "Accept")))));
+    }
+  }, {
+    key: "getInvites",
+    value: function getInvites() {
+      var _this2 = this;
+
+      axios.get('invites/getAll').then(function (response) {
+        if (response.data) {
+          _this2.setState({
+            invites: response.data
+          });
+        }
+
+        console.log(_this2.state.invites);
+      });
     }
   }]);
 
