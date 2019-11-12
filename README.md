@@ -7,9 +7,7 @@
 1. `make docker_create` to create the necessary containers
 2. `make docker_up` to spin up the containers and open and shell
 
-NOTE: To stop docker run `make docker_down`
-
-NOTE: To see all  commands at this level, look at Makefile in the project root
+NOTE: To stop docker run `make docker_down`, to see all  commands at this level, look at Makefile in the project root
 
 3. Add the following to your hosts file
 ```

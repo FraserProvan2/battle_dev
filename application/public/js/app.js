@@ -78913,7 +78913,7 @@ if (token) {
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "7baf8d18caa9904fbf42",
+  key: "",
   cluster: "eu",
   encrypted: true
 });
@@ -79494,8 +79494,8 @@ if (document.getElementById(bindToId)) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/fraserprovan/Documents/projects/battle_dev/application/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/fraserprovan/Documents/projects/battle_dev/application/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /var/www/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

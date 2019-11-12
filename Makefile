@@ -3,9 +3,10 @@ docker_create:
 	cp laradock-env .env
 	mv .env laradock
 	cd laradock && docker-compose build nginx mysql workspace php-fpm
+	#--no-cache
 
 docker_up:
-	cd laradock && docker-compose up -d nginx php-fpm mysql
+	cd laradock && docker-compose up -d nginx mysql php-fpm 
 	cd laradock && docker-compose exec workspace bash
 
 docker_down:
