@@ -78846,18 +78846,14 @@ $.ajaxSetup({
  * Battle
  */
 
-__webpack_require__(/*! ./components/battle/Battle.jsx */ "./resources/js/components/battle/Battle.jsx"); // parent
+__webpack_require__(/*! ./components/battle/App.jsx */ "./resources/js/components/battle/App.jsx"); // parent
 
-
-__webpack_require__(/*! ./components/battle/_Finder.jsx */ "./resources/js/components/battle/_Finder.jsx");
-
-__webpack_require__(/*! ./components/battle/_Game.jsx */ "./resources/js/components/battle/_Game.jsx");
 /**
  * Profile Card
  */
 
 
-__webpack_require__(/*! ./components/profile/Profile.jsx */ "./resources/js/components/profile/Profile.jsx"); // parent
+__webpack_require__(/*! ./components/profile/App.jsx */ "./resources/js/components/profile/App.jsx"); // parent
 
 /***/ }),
 
@@ -78924,10 +78920,10 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/Battle.jsx":
-/*!***************************************************!*\
-  !*** ./resources/js/components/battle/Battle.jsx ***!
-  \***************************************************/
+/***/ "./resources/js/components/battle/App.jsx":
+/*!************************************************!*\
+  !*** ./resources/js/components/battle/App.jsx ***!
+  \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -78938,8 +78934,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Game__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Game */ "./resources/js/components/battle/_Game.jsx");
-/* harmony import */ var _Finder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_Finder */ "./resources/js/components/battle/_Finder.jsx");
+/* harmony import */ var _Battle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Battle */ "./resources/js/components/battle/_Battle.jsx");
+/* harmony import */ var _Finder_Finder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Finder/Finder */ "./resources/js/components/battle/Finder/Finder.jsx");
 /* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_Loader */ "./resources/js/components/battle/_Loader.jsx");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
@@ -78985,12 +78981,12 @@ function (_Component) {
 
     _this.tryGetBattle(); // listen for if battle starts
     // TEMP
-    // axios.post(`/battle`, { 
-    //     battle: 1,
-    //     action: "attack"
-    // });
 
 
+    axios__WEBPACK_IMPORTED_MODULE_5___default.a.post("/battle", {
+      battle: 1,
+      action: "attack"
+    });
     return _this;
   }
 
@@ -78999,14 +78995,14 @@ function (_Component) {
     value: function render() {
       // if in battle, render battle
       if (this.state.battle_id) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Game__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Battle__WEBPACK_IMPORTED_MODULE_2__["default"], {
           battle_id: this.state.battle_id,
           load_data: this.props.loadData
         });
       } // else render battle finder
 
 
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Finder__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Finder_Finder__WEBPACK_IMPORTED_MODULE_3__["default"], null);
     } // check if users in battle, set ID if so
 
   }, {
@@ -79070,14 +79066,14 @@ __webpack_require__.r(__webpack_exports__);
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       className: "btn btn-primary w-100",
       onClick: function onClick() {
-        return playerAction("block");
-      }
-    }, "Block"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      className: "btn btn-primary w-100",
-      onClick: function onClick() {
         return playerAction("attack");
       }
-    }, "Attack"));
+    }, "Attack"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      className: "btn btn-primary w-100 mx-1",
+      onClick: function onClick() {
+        return playerAction("block");
+      }
+    }, "Block"));
   }
 
   return null;
@@ -79176,10 +79172,10 @@ function PlayerCard(_ref) {
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/_Finder.jsx":
-/*!****************************************************!*\
-  !*** ./resources/js/components/battle/_Finder.jsx ***!
-  \****************************************************/
+/***/ "./resources/js/components/battle/Finder/Finder.jsx":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/battle/Finder/Finder.jsx ***!
+  \**********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79252,10 +79248,10 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/_Game.jsx":
-/*!**************************************************!*\
-  !*** ./resources/js/components/battle/_Game.jsx ***!
-  \**************************************************/
+/***/ "./resources/js/components/battle/_Battle.jsx":
+/*!****************************************************!*\
+  !*** ./resources/js/components/battle/_Battle.jsx ***!
+  \****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79399,10 +79395,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/profile/Profile.jsx":
-/*!*****************************************************!*\
-  !*** ./resources/js/components/profile/Profile.jsx ***!
-  \*****************************************************/
+/***/ "./resources/js/components/profile/App.jsx":
+/*!*************************************************!*\
+  !*** ./resources/js/components/profile/App.jsx ***!
+  \*************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

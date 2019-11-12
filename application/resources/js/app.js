@@ -11,12 +11,10 @@ $.ajaxSetup({
  * Battle
  */
 
-require('./components/battle/Battle.jsx'); // parent
-require('./components/battle/_Finder.jsx');
-require('./components/battle/_Game.jsx');
+require('./components/battle/App.jsx'); // parent
 
 /**
  * Profile Card
  */
 
-require('./components/profile/Profile.jsx'); // parent
+require('./components/profile/App.jsx'); // parent

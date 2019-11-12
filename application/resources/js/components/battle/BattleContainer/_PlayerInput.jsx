@@ -12,11 +12,11 @@ export default function({user, player, battle}) {
     if (user.name == player.username) {
         return (
             <div className="d-flex">
-                <a className="btn btn-primary w-100" onClick={() => playerAction("block")}>
-                    Block
-                </a>
                 <a className="btn btn-primary w-100" onClick={() => playerAction("attack")}>
                     Attack
+                </a>
+                <a className="btn btn-primary w-100 mx-1" onClick={() => playerAction("block")}>
+                    Block
                 </a>
             </div>
         )

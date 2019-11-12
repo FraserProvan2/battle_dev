@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Game from './_Game';
-import Finder from './_Finder';
+import Game from './_Battle';
+import Finder from './Finder/Finder';
 import Loader from './_Loader';
 import axios from 'axios';
 
@@ -19,10 +19,10 @@ export default class Battle extends Component {
         // listen for if battle starts
 
         // TEMP
-            // axios.post(`/battle`, { 
-            //     battle: 1,
-            //     action: "attack"
-            // });
+            axios.post(`/battle`, { 
+                battle: 1,
+                action: "attack"
+            });
     }
 
     render() {
