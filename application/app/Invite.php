@@ -6,15 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invite extends Model
 {
-    protected $appends = ['host'];
+    protected $appends = ['username'];
 
-    function getHostAttribute() {
-        return $this->user->name;
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User');
+    function getUsernameAttribute() {
+        return User::find($this->user_id)->name;
     }
 
 }

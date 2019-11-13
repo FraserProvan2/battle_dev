@@ -79220,9 +79220,15 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
     _this.state = {
       invites: []
-    };
+    }; // listen for InviteList event
 
-    _this.getInvites();
+    window.Echo.channel("App.Invites").listen('InviteList', function (response) {
+      _this.setState({
+        invites: response.invites
+      });
+    });
+
+    _this.dispatchInviteList();
 
     return _this;
   }
@@ -79236,28 +79242,44 @@ function (_Component) {
         className: "card-header"
       }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "flex-row mb-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-primary "
+      }, "Post Battle Invite"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-secondary float-right",
+        onClick: this.dispatchInviteList
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-refresh",
+        "aria-hidden": "true"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "list-group"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "list-group-item d-flex justify-content-between align-items-center"
-      }, "Player", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        className: "btn btn-primary"
-      }, "Accept")))));
+      }, this.renderInvitesList())));
     }
   }, {
-    key: "getInvites",
-    value: function getInvites() {
+    key: "renderInvitesList",
+    value: function renderInvitesList() {
       var _this2 = this;
 
-      axios.get('invites/getAll').then(function (response) {
-        if (response.data) {
-          _this2.setState({
-            invites: response.data
-          });
-        }
-
-        console.log(_this2.state.invites);
+      return this.state.invites.map(function (invite) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          key: invite.id,
+          className: "list-group-item d-flex justify-content-between align-items-center"
+        }, invite.username, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn btn-primary",
+          onClick: _this2.acceptInvite(invite.id)
+        }, "Accept"));
       });
+    }
+  }, {
+    key: "dispatchInviteList",
+    value: function dispatchInviteList() {
+      axios.get('invites/dispatch');
+    }
+  }, {
+    key: "acceptInvite",
+    value: function acceptInvite(id) {
+      axios.get("invites/accept/".concat(id));
     }
   }]);
 

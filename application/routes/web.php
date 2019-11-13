@@ -26,5 +26,7 @@ Route::get('battle/check', 'GameLobbyController@getBattleData');
 Route::get('battle/dispatch/{turn_id}', 'GameLobbyController@dispatchBattleData');
     
     // Invites
-    Route::get('invites/getAll', 'InvitesController@getAll');
+    Route::get('invites/dispatch', 'GameLobbyController@dispatchInviteList');
+    Route::get('invites/accept/{invite_id}', 'GameLobbyController@acceptInvite');
+
     

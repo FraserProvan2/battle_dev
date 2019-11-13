@@ -25,3 +25,5 @@ Broadcast::channel('App.Battle.{id}', function ($user, $id) {
     return false;
 });
 
+Broadcast::channel('App.Invites', true);
+
