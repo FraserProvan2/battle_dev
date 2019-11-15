@@ -1,14 +1,6 @@
 import React from 'react'
 
-import PlayerInput from "./_PlayerInput"
-
-function Loader() {
-    return (
-        <div className="d-flex flex-1 justify-content-center text-dark py-4">
-            <i className="fas fa-3x fa-circle-notch fa-spin"></i>
-        </div>
-    )
-}
+import PlayerInput from "./PlayerInput"
 
 function PlayerCard({player, assets}) {
     const {avatar, username, speed, hp, damage} = player
@@ -38,7 +30,6 @@ function PlayerCard({player, assets}) {
 }
 
 export default function({player_a, player_b, assets, user, id}) {
-    if (!player_a || !player_b) return <Loader />
     return (
         <div className="row">
             <div className="col-md-6">

@@ -21,7 +21,7 @@ $factory->define(User::class, function (Faker $faker) {
         'github_id' => $faker->numberBetween(5000, 6000),
         'name' => $faker->userName,
         'email' => $faker->unique()->safeEmail,
-        'avatar' => $faker->imageUrl(),
+        'avatar' => 'https://avatars1.githubusercontent.com/u/45345543',
         'remember_token' => Str::random(10),
     ];
 });

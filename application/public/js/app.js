@@ -78929,7 +78929,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Battle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return App; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
@@ -78964,17 +78964,17 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var Battle =
+var App =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Battle, _Component);
+  _inherits(App, _Component);
 
-  function Battle(props) {
+  function App(props) {
     var _this;
 
-    _classCallCheck(this, Battle);
+    _classCallCheck(this, App);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Battle).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this, props));
     _this.state = {
       battle_id: null
     }; // check if in battle, if so set battle ID
@@ -78990,7 +78990,7 @@ function (_Component) {
     return _this;
   }
 
-  _createClass(Battle, [{
+  _createClass(App, [{
     key: "render",
     value: function render() {
       // if in battle, render battle
@@ -79002,7 +79002,9 @@ function (_Component) {
       } // else render battle finder
 
 
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Finder_Finder__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Finder_Finder__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        load_data: this.props.loadData
+      });
     } // check if users in battle, set ID if so
 
   }, {
@@ -79020,7 +79022,7 @@ function (_Component) {
     }
   }]);
 
-  return Battle;
+  return App;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering 
 
 
@@ -79031,15 +79033,15 @@ if (document.getElementById(bindToId)) {
   var element = document.getElementById(bindToId);
   var props = Object.assign({}, element.dataset); //binds data attributes
 
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Battle, props), element);
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, props), element);
 }
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/BattleContainer/_PlayerInput.jsx":
-/*!*************************************************************************!*\
-  !*** ./resources/js/components/battle/BattleContainer/_PlayerInput.jsx ***!
-  \*************************************************************************/
+/***/ "./resources/js/components/battle/BattleContainer/PlayerInput.jsx":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/battle/BattleContainer/PlayerInput.jsx ***!
+  \************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79081,10 +79083,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/battle/BattleContainer/_Scene.jsx":
-/*!*******************************************************************!*\
-  !*** ./resources/js/components/battle/BattleContainer/_Scene.jsx ***!
-  \*******************************************************************/
+/***/ "./resources/js/components/battle/BattleContainer/Scene.jsx":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/battle/BattleContainer/Scene.jsx ***!
+  \******************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -79092,17 +79094,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _PlayerInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_PlayerInput */ "./resources/js/components/battle/BattleContainer/_PlayerInput.jsx");
+/* harmony import */ var _PlayerInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlayerInput */ "./resources/js/components/battle/BattleContainer/PlayerInput.jsx");
 
 
-
-function Loader() {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "d-flex flex-1 justify-content-center text-dark py-4"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-    className: "fas fa-3x fa-circle-notch fa-spin"
-  }));
-}
 
 function PlayerCard(_ref) {
   var player = _ref.player,
@@ -79146,7 +79140,6 @@ function PlayerCard(_ref) {
       assets = _ref2.assets,
       user = _ref2.user,
       id = _ref2.id;
-  if (!player_a || !player_b) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader, null);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -79218,15 +79211,31 @@ function (_Component) {
     _classCallCheck(this, Finder);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Finder).call(this, props));
+    var load_data = JSON.parse(props.load_data);
     _this.state = {
-      invites: []
+      invites: [],
+      user: load_data.user,
+      userHasInvitePosted: false
     }; // listen for InviteList event
 
-    window.Echo.channel("App.Invites").listen('InviteList', function (response) {
+    window.Echo.channel("App.Invites").listen("InviteList", function (response) {
       _this.setState({
         invites: response.invites
+      }); // check if user has invite
+
+
+      _this.state.invites.forEach(function (invite) {
+        var has_invite = false;
+
+        if (invite.user_id == _this.state.user.id) {
+          has_invite = true;
+        }
+
+        _this.setState({
+          userHasInvitePosted: has_invite
+        });
       });
-    });
+    }); // TODO: get turn data instead of force dispatch
 
     _this.dispatchInviteList();
 
@@ -79243,16 +79252,18 @@ function (_Component) {
       }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-row mb-2"
+        className: "row mb-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-6"
+      }, this.renderPostInviteButton()), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-md-6"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        className: "btn btn-primary "
-      }, "Post Battle Invite"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn btn-secondary float-right",
         onClick: this.dispatchInviteList
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "fa fa-refresh",
         "aria-hidden": "true"
-      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "list-group"
       }, this.renderInvitesList())));
     }
@@ -79265,21 +79276,46 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           key: invite.id,
           className: "list-group-item d-flex justify-content-between align-items-center"
-        }, invite.username, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        }, invite.username, _this2.state.userHasInvitePosted && invite.username == _this2.state.user.name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn btn-danger",
+          onClick: _this2.cancelInvite
+        }, "Cancel Invite") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "btn btn-primary",
-          onClick: _this2.acceptInvite(invite.id)
+          onClick: function onClick() {
+            return _this2.acceptInvite(invite.id);
+          }
         }, "Accept"));
       });
     }
   }, {
+    key: "renderPostInviteButton",
+    value: function renderPostInviteButton() {
+      if (!this.state.userHasInvitePosted) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn btn-primary",
+          onClick: this.postInvite
+        }, "Post Battle Invite");
+      }
+    }
+  }, {
     key: "dispatchInviteList",
     value: function dispatchInviteList() {
-      axios.get('invites/dispatch');
+      axios.get("invites/dispatch");
+    }
+  }, {
+    key: "postInvite",
+    value: function postInvite() {
+      axios.get("invites/post");
+    }
+  }, {
+    key: "cancelInvite",
+    value: function cancelInvite() {
+      axios.get("invites/cancel");
     }
   }, {
     key: "acceptInvite",
     value: function acceptInvite(id) {
-      axios.get("invites/accept/".concat(id));
+      axios.get("invites/accept/".concat(id)); // refresh page
     }
   }]);
 
@@ -79299,12 +79335,13 @@ function (_Component) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Battle; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BattleContainer/_Scene */ "./resources/js/components/battle/BattleContainer/_Scene.jsx");
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Loader */ "./resources/js/components/battle/_Loader.jsx");
+/* harmony import */ var _BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BattleContainer/Scene */ "./resources/js/components/battle/BattleContainer/Scene.jsx");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79327,21 +79364,22 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var Game =
+
+var Battle =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Game, _Component);
+  _inherits(Battle, _Component);
 
-  function Game(props) {
+  function Battle(props) {
     var _this;
 
-    _classCallCheck(this, Game);
+    _classCallCheck(this, Battle);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Game).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Battle).call(this, props));
     var load_data = JSON.parse(props.load_data);
     _this.state = {
       id: _this.props.battle_id,
-      turn: {},
+      turn: null,
       turn_logs: null,
       player_a: null,
       player_b: null,
@@ -79365,7 +79403,7 @@ function (_Component) {
       _this.setState({
         winner: response.winner_username
       });
-    });
+    }); // TODO: get turn data instead of force dispatch
 
     _this.updateBattleData(); // load current turn data
 
@@ -79373,18 +79411,18 @@ function (_Component) {
     return _this;
   }
 
-  _createClass(Game, [{
+  _createClass(Battle, [{
     key: "render",
     value: function render() {
       var turn = this.state.turn;
-      if (!turn) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader, null);
+      if (!this.state.turn) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_2__["default"], this.state), this.renderTurnLogs()));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__["default"], this.state), this.renderTurnLogs()));
     } // render logs
 
   }, {
@@ -79408,7 +79446,7 @@ function (_Component) {
     }
   }]);
 
-  return Game;
+  return Battle;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 

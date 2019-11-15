@@ -27,6 +27,8 @@ Route::get('battle/dispatch/{turn_id}', 'GameLobbyController@dispatchBattleData'
     
     // Invites
     Route::get('invites/dispatch', 'GameLobbyController@dispatchInviteList');
+    Route::get('invites/post', 'GameLobbyController@postInvite');
+    Route::get('invites/cancel', 'GameLobbyController@cancelInvite');
     Route::get('invites/accept/{invite_id}', 'GameLobbyController@acceptInvite');
 
     

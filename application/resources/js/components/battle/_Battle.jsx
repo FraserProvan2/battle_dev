@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import BattleContainer from "./BattleContainer/_Scene"
+import Loader from "./_Loader";
+import Scene from "./BattleContainer/Scene"
 
-export default class Game extends Component {
+export default class Battle extends Component {
     constructor(props) {
         super(props)
 
@@ -11,7 +12,7 @@ export default class Game extends Component {
 
         this.state = {
             id: this.props.battle_id,
-            turn: {},
+            turn: null,
             turn_logs: null,
             player_a: null,
             player_b: null,
@@ -40,17 +41,18 @@ export default class Game extends Component {
                 })
             });
 
-        this.updateBattleData(); // load current turn data
-    }
+            // TODO: get turn data instead of force dispatch
+            this.updateBattleData(); // load current turn data
+        }
     
     render() {
         const {turn} = this.state
-        if (!turn) return <Loader />
+        if (!this.state.turn) return <Loader />
         return (
             <div className="card h-100">
                 <div className="card-header">Battle Alpha</div>
                 <div className="card-body">
-                    <BattleContainer {...this.state} />
+                    <Scene {...this.state} />
                     {this.renderTurnLogs()}
                 </div>
             </div>
