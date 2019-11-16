@@ -47,7 +47,7 @@ export default class Finder extends Component {
                     className="list-group-item d-flex justify-content-between align-items-center"
                 >
                     {invite.username}
-                    
+
                     {/* render Accept invite oR Cancel invite */}
                     {this.state.userHasInvitePosted &&
                     invite.username == this.state.user.name ? (
@@ -72,7 +72,7 @@ export default class Finder extends Component {
                 <div className="d-flex justify-content-center m-4">
                     There are no active invites
                 </div>
-            )
+            );
         }
     }
 
@@ -80,7 +80,10 @@ export default class Finder extends Component {
         if (!this.state.userHasInvitePosted) {
             return (
                 <div className="d-flex flex-row mb-2">
-                    <button className="btn btn-primary" onClick={this.postInvite}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={this.postInvite}
+                    >
                         Post Battle Invite
                     </button>
                 </div>
@@ -89,14 +92,13 @@ export default class Finder extends Component {
     }
 
     getInvites() {
-        axios.get(`invites`)
-            .then(response => {
-                this.setState({
-                    invites: response.data
-                });
-
-                this.checkIfUserHasInvite(this.state.invites)
+        axios.get(`invites`).then(response => {
+            this.setState({
+                invites: response.data
             });
+
+            this.checkIfUserHasInvite(this.state.invites);
+        });
     }
 
     postInvite() {
@@ -124,7 +126,7 @@ export default class Finder extends Component {
                 if (invite.user_id == this.state.user.id) {
                     has_invite = true;
                 }
-        
+
                 this.setState({
                     userHasInvitePosted: has_invite
                 });

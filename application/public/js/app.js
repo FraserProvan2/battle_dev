@@ -79008,7 +79008,7 @@ function (_Component) {
     value: function tryGetBattle() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('battle/check').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_5___default.a.get("battle/check").then(function (response) {
         if (response.data.battle) {
           _this2.setState({
             battle_id: response.data.battle.id,
@@ -79020,11 +79020,11 @@ function (_Component) {
   }]);
 
   return App;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering 
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]); // Rendering
 
 
 
-var bindToId = 'battle';
+var bindToId = "battle";
 
 if (document.getElementById(bindToId)) {
   var element = document.getElementById(bindToId);
@@ -79050,16 +79050,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
   var user = _ref.user,
       player = _ref.player,
-      battle = _ref.battle;
+      battle = _ref.battle,
+      action = _ref.action;
 
   function playerAction(action) {
     axios.post("/battle", {
       battle: battle,
       action: action
     });
-  }
+  } // IF this users username matches the players AND player hasn't actioned yet
 
-  if (user.name == player.username) {
+
+  if (user.name == player.username && action == null) {
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "d-flex"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -79075,7 +79077,9 @@ __webpack_require__.r(__webpack_exports__);
     }, "Block"));
   }
 
-  return null;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "p-3 w-100"
+  });
 });
 
 /***/ }),
@@ -79097,7 +79101,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function PlayerCard(_ref) {
   var player = _ref.player,
-      assets = _ref.assets;
+      assets = _ref.assets,
+      action = _ref.action;
   var avatar = player.avatar,
       username = player.username,
       speed = player.speed,
@@ -79106,6 +79111,8 @@ function PlayerCard(_ref) {
   var hp_stat_icon = assets.hp_stat_icon,
       speed_stat_icon = assets.speed_stat_icon,
       attack_stat_icon = assets.attack_stat_icon;
+  var turn_status = "Awaiting action.";
+  if (action) turn_status = "Actioned.";
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "d-flex flex-column align-items-center"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
@@ -79128,35 +79135,43 @@ function PlayerCard(_ref) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
     src: speed_stat_icon,
     className: "battle-player-stat-icon"
-  }), speed)));
+  }), speed)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+    className: "text-muted"
+  }, turn_status));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (function (_ref2) {
-  var player_a = _ref2.player_a,
+  var assets = _ref2.assets,
+      id = _ref2.id,
+      player_a = _ref2.player_a,
       player_b = _ref2.player_b,
-      assets = _ref2.assets,
-      user = _ref2.user,
-      id = _ref2.id;
+      action_a = _ref2.action_a,
+      action_b = _ref2.action_b,
+      user = _ref2.user;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PlayerCard, {
     assets: assets,
-    player: player_a
+    player: player_a,
+    action: action_a
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
     user: user,
     player: player_a,
-    battle: id
+    battle: id,
+    action: action_a
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PlayerCard, {
     assets: assets,
-    player: player_b
+    player: player_b,
+    action: action_b
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
     user: user,
     player: player_b,
-    battle: id
+    battle: id,
+    action: action_b
   })));
 });
 
@@ -79394,6 +79409,8 @@ function (_Component) {
       id: _this.props.battle_id,
       turn: turn.id,
       turn_logs: turn.battle_frame.turn_summary,
+      action_a: turn.player_a_action,
+      action_b: turn.player_b_action,
       player_a: turn.battle_frame.player_a,
       player_b: turn.battle_frame.player_b,
       winner: null,
@@ -79402,10 +79419,10 @@ function (_Component) {
     }; // listens battle updates
 
     window.Echo["private"]("App.Battle.".concat(_this.state.id)) // turn updates
-    .listen('TurnEndUpdate', function (response) {
+    .listen("TurnEndUpdate", function (response) {
       _this.updateTurnState(response.turn);
     }) // listen to victor
-    .listen('AnnounceWinner', function (response) {
+    .listen("AnnounceWinner", function (response) {
       _this.setState({
         winner: response.winner_username
       }); // refresh to go back to battle finder
@@ -79427,7 +79444,7 @@ function (_Component) {
         className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
-      }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Battle"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__["default"], this.state), this.renderTurnLogs()));
     }
@@ -79451,7 +79468,9 @@ function (_Component) {
         turn: turn,
         turn_logs: turn.battle_frame.turn_summary,
         player_a: turn.battle_frame.player_a,
-        player_b: turn.battle_frame.player_b
+        player_b: turn.battle_frame.player_b,
+        action_a: turn.player_a_action,
+        action_b: turn.player_b_action
       });
     }
   }]);
