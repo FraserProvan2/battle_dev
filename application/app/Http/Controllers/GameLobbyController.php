@@ -24,7 +24,7 @@ class GameLobbyController extends Controller
      * battle.
      * 
      **/
-    public function getBattleData() 
+    public function checkIfInBattle() 
     {
         try {
             if (User::getBattle()) {
@@ -40,28 +40,18 @@ class GameLobbyController extends Controller
         }
     }
 
-    /**
-     * Manually dispatchs event of last rounds data
-     * 
-     **/
-    public function dispatchBattleData($turn_id)
-    {
-        TurnEndUpdate::dispatch(
-            Turn::where('id', $turn_id)->first()
-        );
-    }
-
     /*----------------------------------------------------------------------
     | Invites
     |----------------------------------------------------------------------*/
 
     /**
-     * Manually dispatch invite list events
+     * Gets all invites
      * 
-     **/
-    public function dispatchInviteList()
+     * @return Invite collection
+     */
+    public function getAll()
     {
-        InviteList::dispatch();
+        return Invite::all();
     }
 
     /**
@@ -83,7 +73,7 @@ class GameLobbyController extends Controller
         // create invite
         Invite::create(['user_id' => $user->id]);
 
-        $this->dispatchInviteList();
+        InviteList::dispatch();
     }
 
     /**
@@ -95,7 +85,7 @@ class GameLobbyController extends Controller
         Invite::where('user_id', Auth::user()->id)->first()
             ->delete();
 
-        $this->dispatchInviteList();
+        InviteList::dispatch();
     }
 
     /**
@@ -135,6 +125,8 @@ class GameLobbyController extends Controller
 
         // delete accepted invite
         $invite->delete();
+
+        InviteList::dispatch();
 
         // see if accepting user has invite, delete this one also
         $other_users_invite = Invite::where('user_id', $accepted_user->id)->first();

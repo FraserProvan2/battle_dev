@@ -1,7 +1,6 @@
 import React from "react"
 
 export default function({user, player, battle}) {
-
     function playerAction(action) {
         axios.post(`/battle`, { 
             battle,

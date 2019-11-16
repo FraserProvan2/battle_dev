@@ -16,14 +16,14 @@ class Turn extends Model
     {
         return [
             'turn_summary' => 'Battle Start',
-            'a' => [
+            'player_a' => [
                 'username' => $a->name,
                 'avatar' => $a->avatar, 
                 'speed' => $a->speed(),
                 'damage' => $a->damage(),
                 'hp' => $a->hp(),
             ],
-            'b' => [
+            'player_b' => [
                 'username' => $b->name,
                 'avatar' => $b->avatar, 
                 'speed' => $b->speed(),

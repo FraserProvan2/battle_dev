@@ -122,12 +122,14 @@ class ConstructTurnTest extends TestCase
         $this->signInUser(User::find(1)); 
 
         // mock player B action
-        Turn::first()->update(['player_b_action' => 'attack']);
+        $turn = Turn::find(1);
+        $turn->player_b_action = 'attack';
+        $turn->save();
 
         // construct turn
         $game_engine = new GameEngineController;
         $game_engine->constructTurn(new Request(['battle' => '1', 'action' => 'attack']));
-        
+
         $this->assertEquals($game_engine->turn_ender, true);
     }
     

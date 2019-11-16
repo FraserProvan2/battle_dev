@@ -9,13 +9,14 @@ export default class Battle extends Component {
         super(props)
 
         const load_data = JSON.parse(props.load_data);
+        let turn = this.props.turn;
 
         this.state = {
             id: this.props.battle_id,
-            turn: null,
-            turn_logs: null,
-            player_a: null,
-            player_b: null,
+            turn: turn.id,
+            turn_logs: turn.battle_frame.turn_summary,
+            player_a: turn.battle_frame.player_a,
+            player_b: turn.battle_frame.player_b,
             winner: null,
             assets: load_data.assets,
             user: load_data.user,
@@ -25,14 +26,7 @@ export default class Battle extends Component {
         window.Echo.private(`App.Battle.${this.state.id}`)
             // turn updates
             .listen('TurnEndUpdate', (response) => {
-                if (response.turn.battle_frame) {
-                    this.setState({
-                        turn: response.turn,
-                        turn_logs: response.turn.battle_frame.turn_summary,
-                        player_a: response.turn.battle_frame.player_a,
-                        player_b: response.turn.battle_frame.player_b,
-                    });
-                }
+                this.updateTurnState(response.turn);
             })
             // listen to victor
             .listen('AnnounceWinner', (response) => {
@@ -40,14 +34,11 @@ export default class Battle extends Component {
                     winner: response.winner_username
                 })
             });
-
-            // TODO: get turn data instead of force dispatch
-            this.updateBattleData(); // load current turn data
         }
     
     render() {
         const {turn} = this.state
-        if (!this.state.turn) return <Loader />
+        if (!turn) return <Loader />
         return (
             <div className="card h-100">
                 <div className="card-header">Battle Alpha</div>
@@ -59,7 +50,6 @@ export default class Battle extends Component {
         )
     }
 
-    // render logs
     renderTurnLogs() {
         if (this.state.turn_logs !== null) {
             return (
@@ -78,8 +68,12 @@ export default class Battle extends Component {
         return;
     }
 
-    // check if users in battle, set ID if so
-    updateBattleData() {
-        axios.get(`battle/dispatch/${this.props.battle_id}`);
+    updateTurnState(turn) {
+        this.setState({
+            turn: turn,
+            turn_logs: turn.battle_frame.turn_summary,
+            player_a: turn.battle_frame.player_a,
+            player_b: turn.battle_frame.player_b,
+        });
     }
 }

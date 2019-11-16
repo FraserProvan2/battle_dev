@@ -10,19 +10,12 @@ export default class App extends Component {
         super(props)
 
         this.state = {
-            battle_id: null
+            battle_id: null, 
+            turn: null
         }
 
         // check if in battle, if so set battle ID
         this.tryGetBattle(); 
-
-        // listen for if battle starts
-
-        // TEMP
-            // axios.post(`/battle`, { 
-            //     battle: 1,
-            //     action: "attack"
-            // });
     }
 
     render() {
@@ -31,6 +24,7 @@ export default class App extends Component {
             return <Battle 
                 battle_id={this.state.battle_id}
                 load_data={this.props.loadData}
+                turn={this.state.turn}
             />
         } 
 
@@ -45,7 +39,8 @@ export default class App extends Component {
         axios.get('battle/check').then(response => {
             if (response.data.battle) {
                 this.setState({
-                    battle_id: response.data.battle.id
+                    battle_id: response.data.battle.id,
+                    turn: response.data.turn
                 });
             }
         })

@@ -78976,16 +78976,11 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this, props));
     _this.state = {
-      battle_id: null
+      battle_id: null,
+      turn: null
     }; // check if in battle, if so set battle ID
 
-    _this.tryGetBattle(); // listen for if battle starts
-    // TEMP
-    // axios.post(`/battle`, { 
-    //     battle: 1,
-    //     action: "attack"
-    // });
-
+    _this.tryGetBattle();
 
     return _this;
   }
@@ -78997,7 +78992,8 @@ function (_Component) {
       if (this.state.battle_id) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Battle__WEBPACK_IMPORTED_MODULE_2__["default"], {
           battle_id: this.state.battle_id,
-          load_data: this.props.loadData
+          load_data: this.props.loadData,
+          turn: this.state.turn
         });
       } // else render battle finder
 
@@ -79015,7 +79011,8 @@ function (_Component) {
       axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('battle/check').then(function (response) {
         if (response.data.battle) {
           _this2.setState({
-            battle_id: response.data.battle.id
+            battle_id: response.data.battle.id,
+            turn: response.data.turn
           });
         }
       });
@@ -79221,23 +79218,12 @@ function (_Component) {
     window.Echo.channel("App.Invites").listen("InviteList", function (response) {
       _this.setState({
         invites: response.invites
-      }); // check if user has invite
-
-
-      _this.state.invites.forEach(function (invite) {
-        var has_invite = false;
-
-        if (invite.user_id == _this.state.user.id) {
-          has_invite = true;
-        }
-
-        _this.setState({
-          userHasInvitePosted: has_invite
-        });
       });
-    }); // TODO: get turn data instead of force dispatch
 
-    _this.dispatchInviteList();
+      _this.checkIfUserHasInvite(_this.state.invites);
+    });
+
+    _this.getInvites();
 
     return _this;
   }
@@ -79251,19 +79237,7 @@ function (_Component) {
         className: "card-header"
       }, "Battle Finder"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "row mb-2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-6"
-      }, this.renderPostInviteButton()), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-6"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        className: "btn btn-secondary float-right",
-        onClick: this.dispatchInviteList
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "fa fa-refresh",
-        "aria-hidden": "true"
-      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      }, this.renderPostInviteButton(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "list-group"
       }, this.renderInvitesList())));
     }
@@ -79272,50 +79246,88 @@ function (_Component) {
     value: function renderInvitesList() {
       var _this2 = this;
 
-      return this.state.invites.map(function (invite) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          key: invite.id,
-          className: "list-group-item d-flex justify-content-between align-items-center"
-        }, invite.username, _this2.state.userHasInvitePosted && invite.username == _this2.state.user.name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-          className: "btn btn-danger",
-          onClick: _this2.cancelInvite
-        }, "Cancel Invite") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-          className: "btn btn-primary",
-          onClick: function onClick() {
-            return _this2.acceptInvite(invite.id);
-          }
-        }, "Accept"));
-      });
+      if (this.state.invites.length > 0) {
+        return this.state.invites.map(function (invite) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+            key: invite.id,
+            className: "list-group-item d-flex justify-content-between align-items-center"
+          }, invite.username, _this2.state.userHasInvitePosted && invite.username == _this2.state.user.name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            className: "btn btn-danger",
+            onClick: _this2.cancelInvite
+          }, "Cancel Invite") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            className: "btn btn-primary",
+            onClick: function onClick() {
+              return _this2.acceptInvite(invite.id);
+            }
+          }, "Accept"));
+        });
+      } else {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "d-flex justify-content-center m-4"
+        }, "There are no active invites");
+      }
     }
   }, {
     key: "renderPostInviteButton",
     value: function renderPostInviteButton() {
       if (!this.state.userHasInvitePosted) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "d-flex flex-row mb-2"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "btn btn-primary",
           onClick: this.postInvite
-        }, "Post Battle Invite");
+        }, "Post Battle Invite"));
       }
     }
   }, {
-    key: "dispatchInviteList",
-    value: function dispatchInviteList() {
-      axios.get("invites/dispatch");
+    key: "getInvites",
+    value: function getInvites() {
+      var _this3 = this;
+
+      axios.get("invites").then(function (response) {
+        _this3.setState({
+          invites: response.data
+        });
+
+        _this3.checkIfUserHasInvite(_this3.state.invites);
+      });
     }
   }, {
     key: "postInvite",
     value: function postInvite() {
       axios.get("invites/post");
+      location.reload();
     }
   }, {
     key: "cancelInvite",
     value: function cancelInvite() {
       axios.get("invites/cancel");
+      location.reload();
     }
   }, {
     key: "acceptInvite",
     value: function acceptInvite(id) {
-      axios.get("invites/accept/".concat(id)); // refresh page
+      axios.get("invites/accept/".concat(id));
+      location.reload();
+    }
+  }, {
+    key: "checkIfUserHasInvite",
+    value: function checkIfUserHasInvite(invites) {
+      var _this4 = this;
+
+      if (this.state.user) {
+        invites.forEach(function (invite) {
+          var has_invite = false;
+
+          if (invite.user_id == _this4.state.user.id) {
+            has_invite = true;
+          }
+
+          _this4.setState({
+            userHasInvitePosted: has_invite
+          });
+        });
+      }
     }
   }]);
 
@@ -79377,12 +79389,13 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Battle).call(this, props));
     var load_data = JSON.parse(props.load_data);
+    var turn = _this.props.turn;
     _this.state = {
       id: _this.props.battle_id,
-      turn: null,
-      turn_logs: null,
-      player_a: null,
-      player_b: null,
+      turn: turn.id,
+      turn_logs: turn.battle_frame.turn_summary,
+      player_a: turn.battle_frame.player_a,
+      player_b: turn.battle_frame.player_b,
       winner: null,
       assets: load_data.assets,
       user: load_data.user
@@ -79390,24 +79403,13 @@ function (_Component) {
 
     window.Echo["private"]("App.Battle.".concat(_this.state.id)) // turn updates
     .listen('TurnEndUpdate', function (response) {
-      if (response.turn.battle_frame) {
-        _this.setState({
-          turn: response.turn,
-          turn_logs: response.turn.battle_frame.turn_summary,
-          player_a: response.turn.battle_frame.player_a,
-          player_b: response.turn.battle_frame.player_b
-        });
-      }
+      _this.updateTurnState(response.turn);
     }) // listen to victor
     .listen('AnnounceWinner', function (response) {
       _this.setState({
         winner: response.winner_username
       });
-    }); // TODO: get turn data instead of force dispatch
-
-    _this.updateBattleData(); // load current turn data
-
-
+    });
     return _this;
   }
 
@@ -79415,7 +79417,7 @@ function (_Component) {
     key: "render",
     value: function render() {
       var turn = this.state.turn;
-      if (!this.state.turn) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+      if (!turn) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card h-100"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -79423,8 +79425,7 @@ function (_Component) {
       }, "Battle Alpha"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__["default"], this.state), this.renderTurnLogs()));
-    } // render logs
-
+    }
   }, {
     key: "renderTurnLogs",
     value: function renderTurnLogs() {
@@ -79437,12 +79438,16 @@ function (_Component) {
       }
 
       return;
-    } // check if users in battle, set ID if so
-
+    }
   }, {
-    key: "updateBattleData",
-    value: function updateBattleData() {
-      axios.get("battle/dispatch/".concat(this.props.battle_id));
+    key: "updateTurnState",
+    value: function updateTurnState(turn) {
+      this.setState({
+        turn: turn,
+        turn_logs: turn.battle_frame.turn_summary,
+        player_a: turn.battle_frame.player_a,
+        player_b: turn.battle_frame.player_b
+      });
     }
   }]);
 
