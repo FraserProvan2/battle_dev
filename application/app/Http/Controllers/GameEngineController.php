@@ -111,15 +111,7 @@ class GameEngineController extends Controller
             $this->action = $request->action;
             $this->battle = Battle::find($request->battle);
             $this->turn = $this->battle->getTurn();
-
-            // generate battle frame if round 1
-            if ($this->turn->turn_number == 1) {
-                $this->generateBattleFrame();
-            }
-            // else get previous turns battle frame
-            else {
-                $this->battle_frame = $this->battle->getTurn()->battle_frame;
-            }
+            $this->battle_frame = $this->battle->getTurn()->battle_frame;
             
             // set $this->player_role
             if ($this->player->id == $this->battle->user_a) {

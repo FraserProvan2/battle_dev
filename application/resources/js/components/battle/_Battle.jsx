@@ -33,6 +33,11 @@ export default class Battle extends Component {
                 this.setState({
                     winner: response.winner_username
                 })
+
+                // refresh to go back to battle finder
+                setTimeout(function () {
+                    location.reload();
+                }, 5000);
             });
         }
     

@@ -126,6 +126,12 @@ class GameLobbyController extends Controller
         // delete accepted invite
         $invite->delete();
 
+        // if accepting user also has invite, delete this also
+        $accepted_users_invite = Invite::where('user_id', $accepted_user->id)->first();
+        if ($accepted_users_invite) {
+            $accepted_users_invite->delete();
+        }
+
         InviteList::dispatch();
 
         // see if accepting user has invite, delete this one also

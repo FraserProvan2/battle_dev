@@ -79408,7 +79408,12 @@ function (_Component) {
     .listen('AnnounceWinner', function (response) {
       _this.setState({
         winner: response.winner_username
-      });
+      }); // refresh to go back to battle finder
+
+
+      setTimeout(function () {
+        location.reload();
+      }, 5000);
     });
     return _this;
   }
