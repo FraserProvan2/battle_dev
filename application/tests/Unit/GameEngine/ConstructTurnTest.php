@@ -84,37 +84,6 @@ class ConstructTurnTest extends TestCase
     }
 
     /** @test */
-    public function battle_frame_generated_for_turn_one()
-    {
-        // setup
-        $this->seedDB();
-        $this->signInUser(User::find(1)); 
-
-        $this_turn = Turn::find(1);
-        $this->assertEquals($this_turn->battle_frame, null); // starts null
-
-        // makes First Action
-        $this->post('battle', [
-            'battle' => 1,
-            'action' => 'attack'
-        ]);
-
-        // get turn again 
-        $this_turn = Turn::find(1);
-
-        // has top level keys
-        $this->assertArrayHasKey('turn_summary', $this_turn->battle_frame);
-        $this->assertArrayHasKey('player_a', $this_turn->battle_frame);
-        $this->assertArrayHasKey('player_b', $this_turn->battle_frame);
-
-        // check players arrays in frame are same values when created using PlayerFrame class
-        $fresh_player_a_frame = (array) new PlayerFrame($this_turn->battle_frame['player_a']);
-        $fresh_player_b_frame = (array) new PlayerFrame($this_turn->battle_frame['player_b']);
-        $this->assertEqualsCanonicalizing($this_turn->battle_frame['player_a'],  $fresh_player_a_frame);
-        $this->assertEqualsCanonicalizing($this_turn->battle_frame['player_b'],  $fresh_player_b_frame);
-    }
-
-    /** @test */
     public function game_ender_set_as_true_when_expected()
     {
         // setup
@@ -122,12 +91,14 @@ class ConstructTurnTest extends TestCase
         $this->signInUser(User::find(1)); 
 
         // mock player B action
-        Turn::first()->update(['player_b_action' => 'attack']);
+        $turn = Turn::find(1);
+        $turn->player_b_action = 'attack';
+        $turn->save();
 
         // construct turn
         $game_engine = new GameEngineController;
         $game_engine->constructTurn(new Request(['battle' => '1', 'action' => 'attack']));
-        
+
         $this->assertEquals($game_engine->turn_ender, true);
     }
     

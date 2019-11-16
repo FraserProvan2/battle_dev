@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import BattleContainer from "./BattleContainer/_Scene"
+import Loader from "./_Loader";
+import Scene from "./BattleContainer/Scene"
 
-export default class Game extends Component {
+export default class Battle extends Component {
     constructor(props) {
         super(props)
 
         const load_data = JSON.parse(props.load_data);
+        let turn = this.props.turn;
 
         this.state = {
             id: this.props.battle_id,
-            turn: {},
-            turn_logs: null,
-            player_a: null,
-            player_b: null,
+            turn: turn.id,
+            turn_logs: turn.battle_frame.turn_summary,
+            player_a: turn.battle_frame.player_a,
+            player_b: turn.battle_frame.player_b,
             winner: null,
             assets: load_data.assets,
             user: load_data.user,
@@ -24,24 +26,20 @@ export default class Game extends Component {
         window.Echo.private(`App.Battle.${this.state.id}`)
             // turn updates
             .listen('TurnEndUpdate', (response) => {
-                if (response.turn.battle_frame) {
-                    this.setState({
-                        turn: response.turn,
-                        turn_logs: response.turn.battle_frame.turn_summary,
-                        player_a: response.turn.battle_frame.player_a,
-                        player_b: response.turn.battle_frame.player_b,
-                    });
-                }
+                this.updateTurnState(response.turn);
             })
             // listen to victor
             .listen('AnnounceWinner', (response) => {
                 this.setState({
                     winner: response.winner_username
                 })
-            });
 
-        this.updateBattleData(); // load current turn data
-    }
+                // refresh to go back to battle finder
+                setTimeout(function () {
+                    location.reload();
+                }, 5000);
+            });
+        }
     
     render() {
         const {turn} = this.state
@@ -50,14 +48,13 @@ export default class Game extends Component {
             <div className="card h-100">
                 <div className="card-header">Battle Alpha</div>
                 <div className="card-body">
-                    <BattleContainer {...this.state} />
+                    <Scene {...this.state} />
                     {this.renderTurnLogs()}
                 </div>
             </div>
         )
     }
 
-    // render logs
     renderTurnLogs() {
         if (this.state.turn_logs !== null) {
             return (
@@ -76,8 +73,12 @@ export default class Game extends Component {
         return;
     }
 
-    // check if users in battle, set ID if so
-    updateBattleData() {
-        axios.get(`battle/dispatch/${this.props.battle_id}`);
+    updateTurnState(turn) {
+        this.setState({
+            turn: turn,
+            turn_logs: turn.battle_frame.turn_summary,
+            player_a: turn.battle_frame.player_a,
+            player_b: turn.battle_frame.player_b,
+        });
     }
 }

@@ -6,12 +6,15 @@ create_local:
 	npm install
 	npm run dev
 
-test:
-	vendor/bin/phpunit 
+reset_db:
+	php artisan migrate:fresh --seed
 
 clear_cache: 
 	composer dump-autoload
 	php artisan cache:clear
 	php artisan route:cache
 	php artisan config:clear
-	php artisan view:clear 
+	php artisan view:clear
+
+test:
+	vendor/bin/phpunit 

@@ -1,41 +1,37 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Game from './_Battle';
+import Battle from './_Battle';
 import Finder from './Finder/Finder';
 import Loader from './_Loader';
 import axios from 'axios';
 
-export default class Battle extends Component {
+export default class App extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            battle_id: null
+            battle_id: null, 
+            turn: null
         }
 
         // check if in battle, if so set battle ID
         this.tryGetBattle(); 
-
-        // listen for if battle starts
-
-        // TEMP
-            // axios.post(`/battle`, { 
-            //     battle: 1,
-            //     action: "attack"
-            // });
     }
 
     render() {
         // if in battle, render battle
         if (this.state.battle_id) {
-            return <Game 
+            return <Battle 
                 battle_id={this.state.battle_id}
                 load_data={this.props.loadData}
+                turn={this.state.turn}
             />
         } 
 
         // else render battle finder
-        return <Finder />
+        return <Finder 
+            load_data={this.props.loadData}
+        />
     }
 
     // check if users in battle, set ID if so
@@ -43,10 +39,11 @@ export default class Battle extends Component {
         axios.get('battle/check').then(response => {
             if (response.data.battle) {
                 this.setState({
-                    battle_id: response.data.battle.id
+                    battle_id: response.data.battle.id,
+                    turn: response.data.turn
                 });
             }
-        });
+        })
     }
 }
 
@@ -57,5 +54,5 @@ if (document.getElementById(bindToId)) {
     const element = document.getElementById(bindToId)
     const props = Object.assign({}, element.dataset) //binds data attributes
 
-    ReactDOM.render(<Battle {...props}/>, element);
+    ReactDOM.render(<App {...props}/>, element);
 }
