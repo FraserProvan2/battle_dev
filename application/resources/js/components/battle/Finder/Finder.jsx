@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
+import * as Utils from "../../../helpers/Utils";
+
 export default class Finder extends Component {
     constructor(props) {
         super(props);
@@ -82,7 +84,7 @@ export default class Finder extends Component {
                 <div className="d-flex flex-row mb-2">
                     <button
                         className="btn btn-primary"
-                        onClick={this.postInvite}
+                        onClick={() =>this.postInvite()}
                     >
                         Post Battle Invite
                     </button>
@@ -102,21 +104,25 @@ export default class Finder extends Component {
     }
 
     postInvite() {
+        if (!this.state.user) return Utils.redirectToLogin();
+
         axios.get(`invites/post`);
 
-        location.reload();
+        Utils.reloadPage();
     }
 
     cancelInvite() {
         axios.get(`invites/cancel`);
 
-        location.reload();
+        Utils.reloadPage();
     }
 
     acceptInvite(id) {
+        if (!this.state.user) return Utils.redirectToLogin();
+
         axios.get(`invites/accept/${id}`);
 
-        location.reload();
+        Utils.reloadPage();
     }
 
     checkIfUserHasInvite(invites) {

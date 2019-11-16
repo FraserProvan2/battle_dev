@@ -64,9 +64,9 @@ export default function({
                     action={action_a}
                 />
                 <PlayerInput
+                    battle={id}
                     user={user}
                     player={player_a}
-                    battle={id}
                     action={action_a}
                 />
             </div>
@@ -77,9 +77,9 @@ export default function({
                     action={action_b}
                 />
                 <PlayerInput
+                    battle={id}
                     user={user}
                     player={player_b}
-                    battle={id}
                     action={action_b}
                 />
             </div>

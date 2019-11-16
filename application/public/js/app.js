@@ -79157,9 +79157,9 @@ function PlayerCard(_ref) {
     player: player_a,
     action: action_a
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    battle: id,
     user: user,
     player: player_a,
-    battle: id,
     action: action_a
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6"
@@ -79168,9 +79168,9 @@ function PlayerCard(_ref) {
     player: player_b,
     action: action_b
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PlayerInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    battle: id,
     user: user,
     player: player_b,
-    battle: id,
     action: action_b
   })));
 });
@@ -79191,6 +79191,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../helpers/Utils */ "./resources/js/helpers/Utils.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79208,6 +79209,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -79285,60 +79287,66 @@ function (_Component) {
   }, {
     key: "renderPostInviteButton",
     value: function renderPostInviteButton() {
+      var _this3 = this;
+
       if (!this.state.userHasInvitePosted) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "d-flex flex-row mb-2"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "btn btn-primary",
-          onClick: this.postInvite
+          onClick: function onClick() {
+            return _this3.postInvite();
+          }
         }, "Post Battle Invite"));
       }
     }
   }, {
     key: "getInvites",
     value: function getInvites() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("invites").then(function (response) {
-        _this3.setState({
+        _this4.setState({
           invites: response.data
         });
 
-        _this3.checkIfUserHasInvite(_this3.state.invites);
+        _this4.checkIfUserHasInvite(_this4.state.invites);
       });
     }
   }, {
     key: "postInvite",
     value: function postInvite() {
+      if (!this.state.user) return _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["redirectToLogin"]();
       axios.get("invites/post");
-      location.reload();
+      _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["reloadPage"]();
     }
   }, {
     key: "cancelInvite",
     value: function cancelInvite() {
       axios.get("invites/cancel");
-      location.reload();
+      _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["reloadPage"]();
     }
   }, {
     key: "acceptInvite",
     value: function acceptInvite(id) {
+      if (!this.state.user) return _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["redirectToLogin"]();
       axios.get("invites/accept/".concat(id));
-      location.reload();
+      _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["reloadPage"]();
     }
   }, {
     key: "checkIfUserHasInvite",
     value: function checkIfUserHasInvite(invites) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.state.user) {
         invites.forEach(function (invite) {
           var has_invite = false;
 
-          if (invite.user_id == _this4.state.user.id) {
+          if (invite.user_id == _this5.state.user.id) {
             has_invite = true;
           }
 
-          _this4.setState({
+          _this5.setState({
             userHasInvitePosted: has_invite
           });
         });
@@ -79369,6 +79377,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./_Loader */ "./resources/js/components/battle/_Loader.jsx");
 /* harmony import */ var _BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BattleContainer/Scene */ "./resources/js/components/battle/BattleContainer/Scene.jsx");
+/* harmony import */ var _helpers_Utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../helpers/Utils */ "./resources/js/helpers/Utils.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79386,6 +79395,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -79429,7 +79439,7 @@ function (_Component) {
 
 
       setTimeout(function () {
-        location.reload();
+        _helpers_Utils__WEBPACK_IMPORTED_MODULE_4__["reloadPage"]();
       }, 5000);
     });
     return _this;
@@ -79581,6 +79591,29 @@ if (document.getElementById(bindToId)) {
   var props = Object.assign({}, element.dataset); //binds data attributes
 
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Profile, props), element);
+}
+
+/***/ }),
+
+/***/ "./resources/js/helpers/Utils.js":
+/*!***************************************!*\
+  !*** ./resources/js/helpers/Utils.js ***!
+  \***************************************/
+/*! exports provided: reloadPage, redirectToLogin */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reloadPage", function() { return reloadPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "redirectToLogin", function() { return redirectToLogin; });
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_0__);
+
+function reloadPage() {
+  return location.reload();
+}
+function redirectToLogin() {
+  return location.href = 'login/github';
 }
 
 /***/ }),

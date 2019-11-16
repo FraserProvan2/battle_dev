@@ -4,6 +4,8 @@ import ReactDOM from "react-dom";
 import Loader from "./_Loader";
 import Scene from "./BattleContainer/Scene";
 
+import * as Utils from "../../helpers/Utils";
+
 export default class Battle extends Component {
     constructor(props) {
         super(props);
@@ -38,7 +40,7 @@ export default class Battle extends Component {
 
                 // refresh to go back to battle finder
                 setTimeout(function() {
-                    location.reload();
+                    Utils.reloadPage();
                 }, 5000);
             });
     }
