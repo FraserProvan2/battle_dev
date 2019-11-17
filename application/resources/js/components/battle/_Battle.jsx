@@ -45,6 +45,10 @@ export default class Battle extends Component {
             });
     }
 
+    componentWillReceiveProps() {
+        this.dispatchTurn();
+    }
+
     render() {
         const { turn } = this.state;
         if (!turn) return <Loader />;
@@ -88,5 +92,9 @@ export default class Battle extends Component {
             action_a: turn.player_a_action,
             action_b: turn.player_b_action
         });
+    }
+
+    dispatchTurn() {
+        axios.get("battle");
     }
 }

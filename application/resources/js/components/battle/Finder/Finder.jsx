@@ -16,13 +16,20 @@ export default class Finder extends Component {
         };
 
         // listen for InviteList event
-        window.Echo.channel(`App.Invites`).listen("InviteList", response => {
-            this.setState({
-                invites: response.invites
-            });
+        window.Echo.channel(`App.Invites`)
+            .listen("InviteList", response => {
+                this.setState({
+                    invites: response.invites
+                });
 
-            this.checkIfUserHasInvite(this.state.invites);
-        });
+                this.checkIfUserHasInvite(this.state.invites);
+            })
+            .listen("InviteAccepted", response => {
+                // reload page if users invite gets accepted
+                if (response.user_id === this.state.user.id) {
+                    Utils.reloadPage();
+                }
+            });
 
         this.getInvites();
     }
@@ -84,7 +91,7 @@ export default class Finder extends Component {
                 <div className="d-flex flex-row mb-2">
                     <button
                         className="btn btn-primary"
-                        onClick={() =>this.postInvite()}
+                        onClick={() => this.postInvite()}
                     >
                         Post Battle Invite
                     </button>

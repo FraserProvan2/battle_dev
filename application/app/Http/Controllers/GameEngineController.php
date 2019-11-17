@@ -80,7 +80,7 @@ class GameEngineController extends Controller
         }
 
         // 3. broadcast event, return HTTP response
-        TurnEndUpdate::dispatch($this->turn);
+        TurnEndUpdate::dispatch($this->battle->getTurn());
         return $response;
     }
 

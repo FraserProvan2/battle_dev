@@ -4,11 +4,9 @@ namespace Tests\Unit\Battle;
 
 use App\Battle;
 use App\Http\Controllers\GameEngineController;
-use App\PlayerFrame;
 use App\Turn;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
@@ -21,7 +19,7 @@ class ConstructTurnTest extends TestCase
     {
         // setup
         $this->seedDB();
-        $this->signInUser(User::find(1)); 
+        $this->signInUser(User::find(1));
         $game_engine = new GameEngineController;
 
         $game_engine->constructTurn(new Request(['battle' => '1', 'action' => 'attack']));
@@ -36,7 +34,7 @@ class ConstructTurnTest extends TestCase
     {
         // setup
         $this->seedDB();
-        $this->signInUser(User::find(1)); 
+        $this->signInUser(User::find(1));
         $game_engine = new GameEngineController;
 
         // correct exception thrown on turn construction
@@ -50,7 +48,7 @@ class ConstructTurnTest extends TestCase
         // setup
         $this->seedDB();
         $game_engine = new GameEngineController;
-        
+
         // correct exception thrown on turn construction
         $this->expectExceptionMessage('Error setting globals');
         $game_engine->constructTurn(new Request(['battle' => '1', 'action' => 'attack']));
@@ -61,16 +59,16 @@ class ConstructTurnTest extends TestCase
     {
         // setup
         $this->seedDB();
-        $this->signInUser(User::find(1)); 
+        $this->signInUser(User::find(1));
 
         // construct turn
         $game_engine = new GameEngineController;
         $game_engine->constructTurn(new Request(['battle' => '1', 'action' => 'attack']));
-        
+
         $battle = Battle::find(1);
 
         // this is to set action, as the object hasnt been updated for the action selected in the reqeust
-        $battle->getTurn()->player_a_action = 'attack'; 
+        $battle->getTurn()->player_a_action = 'attack';
 
         // assert battle and turn attributes are instance of models
         $this->assertInstanceOf('App\Turn', $game_engine->turn);
@@ -88,7 +86,7 @@ class ConstructTurnTest extends TestCase
     {
         // setup
         $this->seedDB();
-        $this->signInUser(User::find(1)); 
+        $this->signInUser(User::find(1));
 
         // mock player B action
         $turn = Turn::find(1);
@@ -101,24 +99,24 @@ class ConstructTurnTest extends TestCase
 
         $this->assertEquals($game_engine->turn_ender, true);
     }
-    
+
     /** @test */
     public function player_thats_already_actioned_gets_404()
     {
         // setup
         $this->seedDB();
-        $this->signInUser(User::find(1)); 
+        $this->signInUser(User::find(1));
 
         // player A first action
         $this->post('battle', [
             'battle' => 1,
-            'action' => 'attack'
+            'action' => 'attack',
         ]);
-        
+
         // attempt player A second action
         $response = $this->post('battle', [
             'battle' => 1,
-            'action' => 'attack'
+            'action' => 'attack',
         ]);
 
         $response->assertStatus(400);
