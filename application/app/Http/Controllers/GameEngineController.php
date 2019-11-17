@@ -303,7 +303,7 @@ class GameEngineController extends Controller
                 $this->player_a_frame->restoreHp($this->player_b_frame->damage); // restore opponents attack in HP
                 $this->addToTurnSummary("{$this->player_a_frame->username} perfectly blocked! Restoring {$this->player_b_frame->damage} HP!");
             } else if ($player === 'b') {
-                $this->player_a_frame->restoreHp($this->player_a_frame->damage); // restore opponents attack in HP
+                $this->player_b_frame->restoreHp($this->player_a_frame->damage); // restore opponents attack in HP
                 $this->addToTurnSummary("{$this->player_b_frame->username} perfectly blocked! Restoring {$this->player_a_frame->damage} HP!");
             }
         }
@@ -327,6 +327,7 @@ class GameEngineController extends Controller
                 $this->addToTurnSummary("{$this->player_a_frame->username} block failed! {$this->player_b_frame->username} critically attacks for {$damage_amount} damage!");
             } else if ($player === 'b') {
                 $damage_amount = ($this->player_a_frame->damage * 2); // opponents damage * 2
+                $this->player_b_frame->takeDamage($damage_amount);
                 $this->addToTurnSummary("{$this->player_b_frame->username} block failed! {$this->player_a_frame->username} critically attacks for {$damage_amount} damage!");
             }
         }
