@@ -5,6 +5,7 @@ import Loader from "./_Loader";
 import Scene from "./BattleContainer/Scene";
 
 import * as Utils from "../../helpers/Utils";
+import TurnLogs from "./BattleContainer/TurnLogs";
 
 export default class Battle extends Component {
     constructor(props) {
@@ -16,7 +17,8 @@ export default class Battle extends Component {
         this.state = {
             id: this.props.battle_id,
             turn: turn.id,
-            turn_logs: turn.battle_frame.turn_summary,
+            turn_logs: [], //turn.battle_frame.turn_summary
+            turn_number: turn.turn_number,
             action_a: turn.player_a_action,
             action_b: turn.player_b_action,
             player_a: turn.battle_frame.player_a,
@@ -31,6 +33,7 @@ export default class Battle extends Component {
             // turn updates
             .listen("TurnEndUpdate", response => {
                 this.updateTurnState(response.turn);
+                this.addTurnLogs(response.turn.battle_frame.turn_summary);
             })
             // listen to victor
             .listen("AnnounceWinner", response => {
@@ -56,42 +59,41 @@ export default class Battle extends Component {
             <div className="card h-100">
                 <div className="card-header">Battle</div>
                 <div className="card-body">
+                    Battle Scene
                     <Scene {...this.state} />
-                    {this.renderTurnLogs()}
+                    {/* Turn Logs/Winner */}
+                    {this.announceWinner()}
+                    <TurnLogs {...this.state} />
                 </div>
             </div>
         );
     }
 
-    renderTurnLogs() {
-        if (this.state.turn_logs !== null) {
-            return (
-                <div>
-                    <hr />
-                    <p className="small py-1">
-                        Turn {this.state.turn.turn_number}
-                    </p>
-                    <p>{this.state.turn_logs}</p>
-                    {this.state.winner && (
-                        <h5 className="text-success  text-center">
-                            {this.state.winner} Wins!!!
-                        </h5>
-                    )}
-                </div>
-            );
-        }
-        return;
-    }
-
     updateTurnState(turn) {
         this.setState({
             turn: turn,
-            turn_logs: turn.battle_frame.turn_summary,
+            turn_number: turn.turn_number,
             player_a: turn.battle_frame.player_a,
             player_b: turn.battle_frame.player_b,
             action_a: turn.player_a_action,
             action_b: turn.player_b_action
         });
+    }
+
+    addTurnLogs(logs) {
+        if (logs.length > 0) {
+            this.state.turn_logs.push(logs);
+        }
+    }
+
+    announceWinner() {
+        if (this.state.winner !== null) {
+            return (
+                <h5 className="text-success  text-center">
+                    {this.state.winner} Wins!!!
+                </h5>
+            );
+        }
     }
 
     dispatchTurn() {

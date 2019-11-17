@@ -15,7 +15,7 @@ class Turn extends Model
     static public function createBattleFrame(User $a, User $b)
     {
         return [
-            'turn_summary' => 'Battle Start',
+            'turn_summary' => [],
             'player_a' => [
                 'username' => $a->name,
                 'avatar' => $a->avatar, 
