@@ -59,9 +59,11 @@ export default class Battle extends Component {
             <div className="card h-100">
                 <div className="card-header">Battle</div>
                 <div className="card-body">
-                    Battle Scene
+                    {/* Battle Scene */}
                     <Scene {...this.state} />
+
                     {/* Turn Logs/Winner */}
+                    <div className="w-100 mt-3">Battle Logs:</div>
                     {this.announceWinner()}
                     <TurnLogs {...this.state} />
                 </div>

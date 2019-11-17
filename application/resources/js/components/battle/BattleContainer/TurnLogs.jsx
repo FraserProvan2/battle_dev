@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from "../_Loader";
 
 export default class TurnLogs extends Component {
     render() {

@@ -79195,6 +79195,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TurnLogs; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_Loader */ "./resources/js/components/battle/_Loader.jsx");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -79212,6 +79213,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -79554,7 +79556,9 @@ function (_Component) {
         className: "card-header"
       }, "Battle"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, "Battle Scene", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__["default"], this.state), this.announceWinner(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_TurnLogs__WEBPACK_IMPORTED_MODULE_5__["default"], this.state)));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_Scene__WEBPACK_IMPORTED_MODULE_3__["default"], this.state), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "w-100 mt-3"
+      }, "Battle Logs:"), this.announceWinner(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BattleContainer_TurnLogs__WEBPACK_IMPORTED_MODULE_5__["default"], this.state)));
     }
   }, {
     key: "updateTurnState",
