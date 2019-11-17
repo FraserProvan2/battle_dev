@@ -2,10 +2,14 @@ import React from "react";
 
 export default function({ user, player, battle, action }) {
     function playerAction(action) {
-        axios.post(`/battle`, {
-            battle,
-            action
-        });
+        axios
+            .post(`/battle`, {
+                battle,
+                action
+            })
+            .then(() => {
+                dispatchTurn();
+            });
     }
 
     // IF this users username matches the players AND player hasn't actioned yet
@@ -29,4 +33,8 @@ export default function({ user, player, battle, action }) {
     }
 
     return <div className="p-3 w-100"></div>;
+}
+
+function dispatchTurn() {
+    axios.get("battle");
 }

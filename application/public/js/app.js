@@ -79057,6 +79057,8 @@ __webpack_require__.r(__webpack_exports__);
     axios.post("/battle", {
       battle: battle,
       action: action
+    }).then(function () {
+      dispatchTurn();
     });
   } // IF this users username matches the players AND player hasn't actioned yet
 
@@ -79081,6 +79083,10 @@ __webpack_require__.r(__webpack_exports__);
     className: "p-3 w-100"
   });
 });
+
+function dispatchTurn() {
+  axios.get("battle");
+}
 
 /***/ }),
 
@@ -79238,6 +79244,11 @@ function (_Component) {
       });
 
       _this.checkIfUserHasInvite(_this.state.invites);
+    }).listen("InviteAccepted", function (response) {
+      // reload page if users invite gets accepted
+      if (response.user_id === _this.state.user.id) {
+        _helpers_Utils__WEBPACK_IMPORTED_MODULE_2__["reloadPage"]();
+      }
     });
 
     _this.getInvites();
@@ -79446,6 +79457,11 @@ function (_Component) {
   }
 
   _createClass(Battle, [{
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps() {
+      this.dispatchTurn();
+    }
+  }, {
     key: "render",
     value: function render() {
       var turn = this.state.turn;
@@ -79482,6 +79498,11 @@ function (_Component) {
         action_a: turn.player_a_action,
         action_b: turn.player_b_action
       });
+    }
+  }, {
+    key: "dispatchTurn",
+    value: function dispatchTurn() {
+      axios.get("battle");
     }
   }]);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Battle;
+use App\Events\InviteAccepted;
 use App\Events\InviteList;
 use App\Events\TurnEndUpdate;
 use App\Invite;
@@ -23,6 +24,7 @@ class GameLobbyController extends Controller
      * if so return battle ID, exception incase user isnt in 
      * battle.
      * 
+     * @return Json|Array error or battle/turn
      **/
     public function checkIfInBattle() 
     {
@@ -38,6 +40,21 @@ class GameLobbyController extends Controller
                 'message' => 'User not in battle',
             ], 200);
         }
+    }
+
+    /**
+     * Force dispatches turn update
+     * 
+     */
+    public function dispatchTurn()
+    {
+        $user = Auth::user();
+
+        $battle = Battle::where('user_a', $user->id)
+            ->orWhere('user_b', $user->id)
+            ->first();
+
+        TurnEndUpdate::dispatch($battle->getTurn());
     }
 
     /*----------------------------------------------------------------------
@@ -138,6 +155,8 @@ class GameLobbyController extends Controller
             $other_users_invite->delete();
         }
 
+        // dispatch events
+        InviteAccepted::dispatch($invite->user_id);
         InviteList::dispatch();
     }
 }
